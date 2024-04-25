@@ -13,8 +13,10 @@
                         <th>First</th>
                         <th>Middle</th>
                         <th>Last</th>
-                        <th>Residency</th>
                         <th>College</th>
+                        <th>Residency</th>
+                        <th>IsEnrolled</th>
+                        <th>GraduateStatus</th>
                     </tr>
 
         <!--
