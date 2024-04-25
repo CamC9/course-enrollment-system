@@ -9,6 +9,7 @@
                 <table>
                     <tr>
                         <th>Class</th>
+                        <th>Grade</th>  <!-- Can be incomplete or actual grade -->
                     </tr>
 
         <!--

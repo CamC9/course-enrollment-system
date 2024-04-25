@@ -8,7 +8,7 @@
             <td>
                 <table>
                     <tr>
-                        <th>Course</th>
+                        <th>CourseName</th>
                         <th>Title</th>
                     </tr>
 

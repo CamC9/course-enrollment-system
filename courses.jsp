@@ -9,6 +9,7 @@
                 <table>
                     <tr>
                         <th>CourseName</th>
+                        <th>Department</th>
                     </tr>
 
         <!--
