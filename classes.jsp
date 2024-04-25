@@ -10,6 +10,7 @@
                     <tr>
                         <th>CourseName</th>
                         <th>Title</th>
+                        <th>Quarter</th>
                     </tr>
 
         <!--
