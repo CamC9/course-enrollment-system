@@ -10,6 +10,9 @@
                     <tr>
                         <th>CourseName</th>
                         <th>Department</th>
+                        <th>GradeOption</th>
+                        <th>UnitsMin</th>
+                        <th>UnitsMax</th>
                     </tr>
 
         <!--
