@@ -10,6 +10,7 @@
                     <tr>
                         <th>Class</th>
                         <th>Grade</th>  <!-- Can be incomplete or actual grade -->
+                        <th>Quarter</th>
                     </tr>
 
         <!--

@@ -8,6 +8,7 @@
             <td>
                 <table>
                     <tr>
+                        <th>PID</th>
                         <th>Advisor</th>
                     </tr>
 
