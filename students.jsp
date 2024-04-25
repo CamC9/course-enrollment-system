@@ -9,8 +9,11 @@
                 <table>
                     <tr>
                         <th>SSN</th>
+                        <th>PID</th>
                         <th>First</th>
+                        <th>Middle</th>
                         <th>Last</th>
+                        <th>Residency</th>
                         <th>College</th>
                     </tr>
 
