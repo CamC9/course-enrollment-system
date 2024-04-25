@@ -8,7 +8,7 @@
             <td>
                 <table>
                     <tr>
-                        <th>Class</th>
+                        <th>Advisor</th>
                     </tr>
 
         <!--
