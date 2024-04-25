@@ -8,7 +8,8 @@
             <td>
                 <table>
                     <tr>
-                        <th>CourseName</th>
+                        <th>Date</th>
+                        <th>SessionType</th>
                     </tr>
 
         <!--
