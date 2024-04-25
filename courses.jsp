@@ -13,6 +13,8 @@
                         <th>GradeOption</th>
                         <th>UnitsMin</th>
                         <th>UnitsMax</th>
+                        <th>RequiresConsent</th>
+                        <th>RequiresLabwork</th>
                     </tr>
 
         <!--
