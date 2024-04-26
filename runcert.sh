@@ -1,0 +1,1 @@
+sudo certbot --nginx --nginx-server-root /opt/homebrew/etc/nginx/ -d cameronc.dev -d www.cameronc.dev
