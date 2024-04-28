@@ -61,7 +61,6 @@
                                     // Then INSERT the data into the students table
 
                                     PreparedStatement pstmt = conn.prepareStatement("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                                    
                                     pstmt.setString(1, request.getParameter("PID"));
                                     pstmt.setInt(2, Integer.parseInt(request.getParameter("SSN")));
                                     pstmt.setString(3, request.getParameter("first"));
@@ -71,9 +70,33 @@
                                     pstmt.setString(7, request.getParameter("residency"));
                                     pstmt.setBoolean(8, Boolean.parseBoolean(request.getParameter("is_enrolled")));
                                     pstmt.setString(9, request.getParameter("graduate_status"));
-
                                     pstmt.executeUpdate();
-                                     
+                                    conn.commit();
+                                    conn.setAutoCommit(true);
+                                }
+
+                                if (action != null && action.equals("update")) {
+                                    conn.setAutoCommit(false);
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE students SET SSN = ?, first = ?, middle = ?, last = ?, college = ?, residency = ?, is_enrolled = ?, graduate_status = ? WHERE PID = ?");
+                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("SSN")));
+                                    pstmt.setString(2, request.getParameter("first"));
+                                    pstmt.setString(3, request.getParameter("middle"));
+                                    pstmt.setString(4, request.getParameter("last"));
+                                    pstmt.setString(5, request.getParameter("college"));
+                                    pstmt.setString(6, request.getParameter("residency"));
+                                    pstmt.setBoolean(7, Boolean.parseBoolean(request.getParameter("is_enrolled")));
+                                    pstmt.setString(8, request.getParameter("graduate_status"));
+                                    pstmt.setString(9, request.getParameter("PID"));
+                                    pstmt.executeUpdate();
+                                    conn.commit();
+                                    conn.setAutoCommit(true);
+                                }
+
+                                if (action != null && action.equals("delete")) {
+                                    conn.setAutoCommit(false);
+                                    PreparedStatement pstmt = conn.prepareStatement("DELETE FROM students WHERE PID = ?");
+                                    pstmt.setString(1, request.getParameter("PID"));
+                                    pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
                                 }
@@ -82,15 +105,26 @@
                                 while (rs.next()) {
                         %>
                             <tr>
-                                <td><%=rs.getString("PID")%></td>
-                                <td><%=rs.getInt("SSN")%></td>
-                                <td><%=rs.getString("first")%></td>
-                                <td><%=rs.getString("middle")%></td>
-                                <td><%=rs.getString("last")%></td>
-                                <td><%=rs.getString("college")%></td>
-                                <td><%=rs.getString("residency")%></td>
-                                <td><%= rs.getBoolean("is_enrolled") ? "True" : "False" %></td> 
-                                <td><%=rs.getString("graduate_status")%></td>
+                                <form action="students.jsp" method="get">
+                                    <input type="hidden" name="action" value="update" />
+                                    <td><input value="<%= rs.getString("PID") %>" name="PID" size="3"></td>
+                                    <td><input value="<%= rs.getInt("SSN") %>" name="SSN" size="11"></td>
+                                    <td><input value="<%= rs.getString("first") %>" name="first" size="4"></td>
+                                    <td><input value="<%= rs.getString("middle") %>" name="middle" size="6"></td>
+                                    <td><input value="<%= rs.getString("last") %>" name="last" size="6"></td>
+                                    <td><input value="<%= rs.getString("college") %>" name="college" size="6"></td>
+                                    <td><input value="<%= rs.getString("residency") %>" name="residency" size="11"></td>
+                                    <td><input value="<%= rs.getBoolean("is_enrolled") %>" name="is_enrolled" size="9"></td>
+                                    <td><input value="<%= rs.getString("graduate_status") %>" name="graduate_status" size="15"></td>
+                                    <td><input type="submit" value="Update"></td>
+                                </form>
+                                <td>
+                                    <form action="students.jsp" method="get">
+                                        <input type="hidden" name="action" value="delete" />
+                                        <input type="hidden" name="PID" value="<%= rs.getString("PID") %>" />
+                                        <input type="submit" value="Delete" />
+                                    </form>
+                                </td>
                             </tr>
                         <%
                                 }
