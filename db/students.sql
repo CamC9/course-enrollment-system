@@ -1,6 +1,6 @@
 CREATE TABLE students (
-    PID INT PRIMARY KEY,
-    SSN VARCHAR(255) NOT NULL,
+    PID VARCHAR(255) PRIMARY KEY,
+    SSN INT NOT NULL,
     first VARCHAR(255) NOT NULL,
     middle VARCHAR(255),
     last VARCHAR(255) NOT NULL,
@@ -11,6 +11,6 @@ CREATE TABLE students (
 );
 
 INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status) 
-    VALUES (12, '111-22-3333', 'John', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate');
+    VALUES ('A12', '111223333', 'John', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate');
 INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status) 
-    VALUES (100, '123-45-6789', 'John', 'Rain', 'Hamm', 'Muir', 'Out-of-State', TRUE, 'BSMS');
+    VALUES ('555', '123456789', 'John', 'Rain', 'Hamm', 'Muir', 'Out-of-State', TRUE, 'BSMS');

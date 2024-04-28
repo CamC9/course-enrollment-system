@@ -25,10 +25,9 @@
                             <th>IsEnrolled</th>
                             <th>GraduateStatus</th>
                         </tr>
-                    </thead>
-                    <tbody>
                         <tr>
-                            <form action="students.jsp" method="post">
+                            <form action="students.jsp" method="get">
+                                <input type="hidden" name="action" value="add" />
                                 <input type="text" name="PID" size="3" />
                                 <input type="text" name="SSN" size="11" />
                                 <input type="text" name="first" size="4" />
@@ -41,6 +40,9 @@
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
+                    </thead>
+                    <tbody>
+
                         <%
                             Connection conn = null;
                             Statement stmt = null;
@@ -49,18 +51,45 @@
                                 Class.forName("org.postgresql.Driver");
                                 conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
                                 stmt = conn.createStatement();
+                                
+                                // Check if any form data was submitted
+                                String action = request.getParameter("action");
+                                if (action != null && action.equals("add")) {
+                                    conn.setAutoCommit(false);
+                                    
+                                    // Create the prepared Statement
+                                    // Then INSERT the data into the students table
+
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                    
+                                    pstmt.setString(1, request.getParameter("PID"));
+                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("SSN")));
+                                    pstmt.setString(3, request.getParameter("first"));
+                                    pstmt.setString(4, request.getParameter("middle"));
+                                    pstmt.setString(5, request.getParameter("last"));
+                                    pstmt.setString(6, request.getParameter("college"));
+                                    pstmt.setString(7, request.getParameter("residency"));
+                                    pstmt.setBoolean(8, Boolean.parseBoolean(request.getParameter("is_enrolled")));
+                                    pstmt.setString(9, request.getParameter("graduate_status"));
+
+                                    pstmt.executeUpdate();
+                                     
+                                    conn.commit();
+                                    conn.setAutoCommit(true);
+                                }
+
                                 rs = stmt.executeQuery("SELECT * FROM students");
                                 while (rs.next()) {
                         %>
                             <tr>
                                 <td><%=rs.getString("PID")%></td>
-                                <td><%=rs.getString("SSN")%></td>
+                                <td><%=rs.getInt("SSN")%></td>
                                 <td><%=rs.getString("first")%></td>
                                 <td><%=rs.getString("middle")%></td>
                                 <td><%=rs.getString("last")%></td>
                                 <td><%=rs.getString("college")%></td>
                                 <td><%=rs.getString("residency")%></td>
-                                <td><%=rs.getString("is_enrolled")%></td>
+                                <td><%= rs.getBoolean("is_enrolled") ? "True" : "False" %></td> 
                                 <td><%=rs.getString("graduate_status")%></td>
                             </tr>
                         <%
