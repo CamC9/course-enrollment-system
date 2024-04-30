@@ -87,8 +87,8 @@
                             <tr>
                                 <form action="faculty.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input value="<%= rs.getString("Name") %>" name="PID" size="6"></td>
-                                    <td><input value="<%= rs.getString("Title") %>" name="PID" size="6"></td>
+                                    <td><input value="<%= rs.getString("Name") %>" name="Name" size="6"></td>
+                                    <td><input value="<%= rs.getString("Title") %>" name="Title" size="6"></td>
                                     <td><input value="<%= rs.getString("Department") %>" name="Department" size="11"></td>
                                     <td><input value="<%= rs.getInt("SSN") %>" name="SSN" size="11"></td>
                                     <td><input type="submit" value="Update"></td>
