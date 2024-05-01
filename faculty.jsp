@@ -18,15 +18,13 @@
                             <th>Name</th>
                             <th>Title</th>
                             <th>Department</th>
-                            <th>SSN</th>
                         </tr>
                         <tr>
                             <form action="faculty.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="Name" size="6" />
-                                <input type="text" name="Title" size="6" />
-                                <input type="text" name="Department" size="11" />
-                                <input type="text" name="SSN" size="11" />
+                                <input type="text" name="Name" size="20" />
+                                <input type="text" name="Title" size="20" />
+                                <input type="text" name="Department" size="20" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -50,11 +48,10 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the faculty table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO faculty VALUES (?, ?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO faculty VALUES (?, ?, ?)");
                                     pstmt.setString(1, request.getParameter("Name"));
                                     pstmt.setString(2, request.getParameter("Title"));
                                     pstmt.setString(3, request.getParameter("Department"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("SSN")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -62,11 +59,10 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE faculty SET Title = ?, Department = ?, SSN = ? WHERE Name = ?");
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE faculty SET Title = ?, Department = ? WHERE Name = ?");
                                     pstmt.setString(1, request.getParameter("Title"));
                                     pstmt.setString(2, request.getParameter("Department"));
-                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("SSN"))); 
-                                    pstmt.setString(4, request.getParameter("Name"));
+                                    pstmt.setString(3, request.getParameter("Name"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -87,10 +83,9 @@
                             <tr>
                                 <form action="faculty.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input value="<%= rs.getString("Name") %>" name="Name" size="6"></td>
-                                    <td><input value="<%= rs.getString("Title") %>" name="Title" size="6"></td>
-                                    <td><input value="<%= rs.getString("Department") %>" name="Department" size="11"></td>
-                                    <td><input value="<%= rs.getInt("SSN") %>" name="SSN" size="11"></td>
+                                    <td><input value="<%= rs.getString("Name") %>" name="Name" size="20"></td>
+                                    <td><input value="<%= rs.getString("Title") %>" name="Title" size="20"></td>
+                                    <td><input value="<%= rs.getString("Department") %>" name="Department" size="20"></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>

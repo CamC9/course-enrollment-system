@@ -1,9 +1,8 @@
 CREATE TABLE faculty (
-    Name VARCHAR(255) PRIMARY KEY,
-    Title VARCHAR(255) NOT NULL,
-    Department VARCHAR(255) NOT NULL, 
-    SSN INT NOT NULL
+    name VARCHAR(255) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    department VARCHAR(255) NOT NULL
 );
 
-INSERT INTO faculty (NAME, Title, Department, SSN) 
-    VALUES ('John Doe', 'Professor', 'Computer Science', '111223333');
+INSERT INTO faculty (name, title, department) 
+    VALUES ('John Doe', 'Professor', 'Computer Science');
