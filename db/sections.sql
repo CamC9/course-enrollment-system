@@ -10,3 +10,7 @@ CREATE TABLE sections (
 -- Valid entriess
 INSERT INTO classes (course_name, class_title, year, quarter, offering_id)
     VALUES ('CSE_132B', 'Database Systems Applications', 2018, 'SPRING', 1);
+
+-- Future class
+INSERT INTO classes (course, class_title, year, quarter, offering_id)
+    VALUES ('CSE_156', 'Statistical Natural Language Processing', 2020, 'SPRING', 1);

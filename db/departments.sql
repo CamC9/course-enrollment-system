@@ -4,6 +4,10 @@ CREATE TABLE departments (
     lower_div_units_req NOT NULL,
 );
 
--- Valid teacher
+-- Valid entry
 INSERT INTO departments (department_name, total_units_req, lower_div_units_req) 
     VALUES ('Computer Science', 120, 48);
+
+-- Invalid department name
+INSERT INTO departments (department_name, total_units_req, lower_div_units_req) 
+    VALUES ('NOT_A_DEPARTMENT', 120, 48);  
