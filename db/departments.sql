@@ -1,8 +1,7 @@
 CREATE TABLE departments (
-    department_name VARCHAR(255) NOT NULL,
+    department_name VARCHAR(255) PRIMARY KEY,
     total_units_req int NOT NULL,
     lower_div_units_req NOT NULL,
-    PRIMARY KEY (department_name),
 );
 
 -- Valid teacher

@@ -11,10 +11,10 @@ CREATE TABLE courses (
 
 -- Valid teacher
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_132B', 'Computer Science', TRUE, TRUE, 4, 4);
+    VALUES ('CSE_132B', 'Computer Science', TRUE, TRUE, 4, 4, 'Letter');
 -- Invalid Department
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_156', 'NOT_A_DEPARTMENT', TRUE, TRUE, 4, 4);
+    VALUES ('CSE_156', 'NOT_A_DEPARTMENT', TRUE, TRUE, 4, 4, 'S/U');
 -- Duplicate Course_Name
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_132B', 'Computer Science', TRUE, TRUE, 4, 4);
+    VALUES ('CSE_132B', 'Computer Science', TRUE, TRUE, 4, 4, 'Both');
