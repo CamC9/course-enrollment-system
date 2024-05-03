@@ -4,7 +4,7 @@ CREATE TABLE classes (
     year int NOT NULL,
     quarter VARCHAR(255) NOT NULL,
     offering_id int PRIMARY KEY,
-    FOREIGN KEY (course_name) REFERENCES courses(course_name),
+    FOREIGN KEY (course_name) REFERENCES courses(course_name)
 );
 
 -- Valid entriess

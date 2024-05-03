@@ -1,8 +1,8 @@
 CREATE TABLE prerequisites (
     course_name VARCHAR(255) NOT NULL,
     prerequisite_name VARCHAR(255) NOT NULL,
-    prerequisite_id int PRIMARY KEY
-    FOREIGN KEY (course_name) REFERENCES courses(course_name)
+    prerequisite_id int PRIMARY KEY,
+    FOREIGN KEY (course_name) REFERENCES courses(course_name),
     FOREIGN KEY (prerequisite_name) REFERENCES courses(course_name)
 );
 
