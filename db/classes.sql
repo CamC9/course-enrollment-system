@@ -18,3 +18,11 @@ INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
 -- Future quarter
 INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('CSE_105', 'Intro to Algorithms', 'WINTER', 2019, 4);
+
+-- Valid entry
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
+    VALUES ('CSE_156', 'Statistical Natural Language Processing', 'WINTER', 2018, 5); 
+
+-- Valid entry
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
+    VALUES ('COGS_112', 'Humor', 'SPRING', 2018, 2);

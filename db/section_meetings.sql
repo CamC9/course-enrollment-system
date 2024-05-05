@@ -7,9 +7,13 @@ CREATE TABLE section_meetings (
     end_time TIME NOT NULL,
     date DATE NOT NULL, 
     is_recurring BOOLEAN NOT NULL,
-    FOREIGN KEY (setion_id) REFERENCES sections(section_id)
+    FOREIGN KEY (section_id) REFERENCES class_sections(section_id)
 );
 
 -- Valid entry
-INSERT INTO classes (course_name, class_title, year, quarter, offering_id)
-    VALUES ('CSE_132B', 'Database Systems Applications', 2018, 'SPRING', 'John Doe' 1);
+INSERT INTO section_meetings (class_title, section_id, meeting_type, building_and_room, start_time, end_time, date, is_recurring)
+    VALUES ('Database Systems Applications', 1, 'Lecture', 'CSB 130', '10:00:00', '11:50:00', '2018-04-02', TRUE);
+
+-- Valid entry for different section
+INSERT INTO section_meetings (class_title, section_id, meeting_type, building_and_room, start_time, end_time, date, is_recurring)
+    VALUES ('Database Systems Applications', 2, 'Lecture', 'CSB 130', '10:00:00', '11:50:00', '2018-04-02', TRUE);

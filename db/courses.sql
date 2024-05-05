@@ -24,3 +24,15 @@ INSERT INTO courses (course_name, department, needs_instructor_consent, requires
 -- Fourth valid entry
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
     VALUES ('CSE_105', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');
+
+-- Fifth valid entry
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
+    VALUES ('CSE_132A', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');
+
+-- Sixth valid entry
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
+    VALUES ('CSE_132', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');
+
+-- Seventh valid entry
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
+    VALUES ('CSE_197', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');

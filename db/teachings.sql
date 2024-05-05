@@ -1,6 +1,6 @@
 CREATE TABLE teachings (
     faculty_name VARCHAR(255) NOT NULL,
-    course_name int NOT NULL,
+    course_name VARCHAR(255) NOT NULL,
     quarter VARCHAR(255) NOT NULL,
     year int NOT NULL,
     teaching_id int PRIMARY KEY,
@@ -11,17 +11,11 @@ CREATE TABLE teachings (
 -- Valid teacher 
 INSERT INTO teachings (faculty_name, course_name, quarter, year, teaching_id) 
     VALUES ('John Doe', 'CSE_132B', 'SPRING', 2018, 1);
-INSERT INTO teachings (faculty_name, course_name, quarter, year, teaching_id) 
-    VALUES ('NOT_A_FACULTY', 'CSE_132B', 'SPRING', 2018, 2);
--- Invalid course
-INSERT INTO teachings (faculty_name, course_name, quarter, year, teaching_id) 
-    VALUES ('Jane Doe', 'NOT_A_COURSE', 'SPRING', 2018, 3);
--- Duplicate EnrollmentID
-INSERT INTO teachings (faculty_name, course_name, quarter, year, teaching_id) 
-    VALUES ('Test Professor', 'CSE_132B', 'SPRING', 2018, 1);
+
 -- Future quarter
 INSERT INTO teachings (faculty_name, course_name, quarter, year, teaching_id) 
-    VALUES ('Test Professor', 'CSE_132B', 'WINTER', 2019, 4);
+    VALUES ('Jackson Doe', 'CSE_132B', 'WINTER', 2019, 4);
+
 -- Past quarter
 INSERT INTO teachings (faculty_name, course_name, quarter, year, teaching_id) 
-    VALUES ('Test Professor', 'CSE_105', 'FALL', 2017, 5);
+    VALUES ('Jane Doe', 'CSE_105', 'FALL', 2017, 5);

@@ -10,7 +10,7 @@ INSERT INTO faculty (name, title, department)
 
 -- Valid entry
 INSERT INTO faculty (name, title, department) 
-    VALUES ('Jane Doe', 'Professor', 'Computer Science');
+    VALUES ('Jane Doe', 'Professor', 'Cognitive Science');
 
 -- Valid entry
 INSERT INTO faculty (name, title, department) 

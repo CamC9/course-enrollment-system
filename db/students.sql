@@ -13,9 +13,11 @@ CREATE TABLE students (
 );
 
 INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, department) 
-    VALUES ('A12', '111223333', 'John', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate', NULL);
+    VALUES ('A99', '111223333', 'John', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate', NULL);
 INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, department) 
-    VALUES ('555', '123456789', 'John', 'Rain', 'Hamm', NULL, 'Out-of-State', TRUE, 'BSMS', 'Cognitive Science');
+    VALUES ('A88', '123456789', 'John', 'Rain', 'Hamm', NULL, 'Out-of-State', TRUE, 'BSMS', 'Cognitive Science');
+INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, department)
+    VALUES ('A77', '987654321', 'Jane', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate', NULL);
 
 -- Add a student with college when student is a graduate student for testing
     

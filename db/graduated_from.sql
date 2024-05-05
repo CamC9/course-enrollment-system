@@ -9,6 +9,6 @@ CREATE TABLE graduated_from (
 INSERT INTO graduated_from (PID, college, degree)
     VALUES ('A99', 'University of Nebraska', 'BS');
 
--- Invalid PID
+-- Valid PID
 INSERT INTO graduated_from (PID, college, degree)
-    VALUES ('NOT_A_PID', 'University of Nebraska', 'BS');
+    VALUES ('A88', 'University of Nebraska', 'BS');

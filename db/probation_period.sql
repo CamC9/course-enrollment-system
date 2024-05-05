@@ -11,21 +11,13 @@ CREATE TABLE probation_period (
 INSERT INTO probation_period (PID, probation_id, start_date, end_date, reason)
     VALUES ('A99', 1, '2018-01-01', '2022-01-01', 'Poor grades');
 
--- Invalid PID
-INSERT INTO probation_period (PID, probation_id, start_date, end_date, reason)
-    VALUES ('NOT_A_PID', 2, '2018-01-01', '2022-01-01', 'Poor grades');
-
--- Duplicate probation_id
-INSERT INTO probation_period (PID, probation_id, start_date, end_date, reason)
-    VALUES ('A99', 1, '2028-01-01', '2029-01-01', 'Poor grades');
-
 -- Date range goes in backwards order
 INSERT INTO probation_period (PID, probation_id, start_date, end_date, reason)
-    VALUES ('A99', 3, '2022-01-01', '2018-01-01', 'Poor grades');
+    VALUES ('A99', 3, '2022-01-01', '2018-01-01', 'Misconduct');
 
 -- Different student, same date range
 INSERT INTO probation_period (PID, probation_id, start_date, end_date, reason)
-    VALUES ('A88', 4, '2018-01-01', '2022-01-01', 'Poor grades');
+    VALUES ('A88', 4, '2018-01-01', '2022-01-01', 'Misconduct');
 
 -- Invalid date range overlap for same student
 INSERT INTO probation_period (PID, probation_id, start_date, end_date, reason)
