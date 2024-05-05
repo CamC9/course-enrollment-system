@@ -8,21 +8,13 @@ CREATE TABLE classes (
 );
 
 -- Valid entriess
-INSERT INTO classes (course_name, class_title, year, quarter, offering_id)
-    VALUES ('CSE_132B', 'Database Systems Applications', 'SPRING', 2018, 1);
-
--- Invalid course
-INSERT INTO classes (course_name, class_title, year, quarter, offering_id)
-    VALUES ('NOT_A_COURSE', 'Test', 'SPRING', 2018, 2);
-
--- Duplicate offering_id
-INSERT INTO classes (course_name, class_title, year, quarter, offering_id)
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('CSE_132B', 'Database Systems Applications', 'SPRING', 2018, 1);
 
 -- Past quarter
-INSERT INTO classes (course_name, class_title, year, quarter, offering_id)
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('CSE_105', 'Intro to Algorithms', 'FALL', 2017, 3);
 
 -- Future quarter
-INSERT INTO classes (course_name, class_title, year, quarter, offering_id)
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('CSE_105', 'Intro to Algorithms', 'WINTER', 2019, 4);
