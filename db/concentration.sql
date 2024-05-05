@@ -3,9 +3,9 @@ CREATE TABLE concentration (
 );
 
 -- Valid category_name 
-INSERT INTO category (category_name)
+INSERT INTO concentration (concentration_name)
     VALUES ('Database');
 
 -- Second category_name
-INSERT INTO category (category_name)
+INSERT INTO concentration (concentration_name)
     VALUES ('Machine Learning');
