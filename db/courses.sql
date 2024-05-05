@@ -9,12 +9,14 @@ CREATE TABLE courses (
     FOREIGN KEY (department) REFERENCES departments(department_name)
 );
 
--- Valid teacher
+-- Valid entry
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
     VALUES ('CSE_132B', 'Computer Science', TRUE, TRUE, 4, 4, 'Letter');
--- Invalid Department
+
+-- Second valid entry
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_156', 'NOT_A_DEPARTMENT', TRUE, TRUE, 4, 4, 'S/U');
--- Duplicate Course_Name
+    VALUES ('CSE_156', 'Computer Science', TRUE, TRUE, 4, 4, 'Both');
+
+-- Third valid entry
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_132B', 'Computer Science', TRUE, TRUE, 4, 4, 'Both');
+    VALUES ('COGS_112', 'Cognitive Science', FALSE, FALSE, 4, 4, 'S/U');
