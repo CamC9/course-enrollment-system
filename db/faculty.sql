@@ -7,8 +7,3 @@ CREATE TABLE faculty (
 -- Regular entry
 INSERT INTO faculty (name, title, department) 
     VALUES ('John Doe', 'Professor', 'Computer Science');
-
--- Duplicate name
-INSERT INTO faculty (name, title, department) 
-    VALUES ('John Doe', 'Lecturer', 'Cognitive Science');
-

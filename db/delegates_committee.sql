@@ -3,9 +3,17 @@ CREATE TABLE delegates_committee (
     faculty_name VARCHAR(255) NOT NULL,
     PRIMARY KEY (PID, faculty_name),
     FOREIGN KEY (PID) REFERENCES students(PID),
-    FOREIGN KEY (faculty_name) REFERENCES faculty(faculty_name)
+    FOREIGN KEY (faculty_name) REFERENCES faculty(name)
 );
 
--- Valid teacherdb/teachings.sql 
+-- Valid entry
 INSERT INTO delegates_committee (PID, faculty_name)
-    VALUES ('A99', 'John Doe');
+    VALUES ('A99', 'Jin Doe');
+
+-- Valid entry
+INSERT INTO delegates_committee (PID, faculty_name)
+    VALUES ('A99', 'Jackson Doe');
+
+-- Other student valid entry
+INSERT INTO delegates_committee (PID, faculty_name)
+    VALUES ('A88', 'Jackson Doe');
