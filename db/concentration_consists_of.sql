@@ -3,7 +3,7 @@ CREATE TABLE concentration_consists_of (
     course_name VARCHAR(255) NOT NULL,
     PRIMARY KEY (concentration_name, course_name),
     FOREIGN KEY (concentration_name) REFERENCES concentration(concentration_name),
-    FOREIGN KEY (course_name) REFERENCES course(course_name)
+    FOREIGN KEY (course_name) REFERENCES courses(course_name)
 );
 
 -- Valid concentration_name and course_name
