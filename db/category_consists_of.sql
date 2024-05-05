@@ -3,7 +3,7 @@ CREATE TABLE category_consists_of (
     course_name VARCHAR(255) NOT NULL,
     PRIMARY KEY (category_name, course_name),
     FOREIGN KEY (category_name) REFERENCES category(category_name),
-    FOREIGN KEY (course_name) REFERENCES course(course_name)
+    FOREIGN KEY (course_name) REFERENCES courses(course_name)
 );
 
 -- Valid category_name and course_name

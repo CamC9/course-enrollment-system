@@ -1,11 +1,11 @@
 CREATE TABLE courses (
-    course_name int PRIMARY KEY,
+    course_name VARCHAR(255) PRIMARY KEY,
     department VARCHAR(255) NOT NULL,
     needs_instructor_consent BOOLEAN NOT NULL,
     requires_lab_work BOOLEAN NOT NULL,
-    min_unit int NOT NULL,
-    max_unit int NOT NULL,
-    grading_type NOT NULL,
+    min_unit INT NOT NULL,
+    max_unit INT NOT NULL,
+    grading_type VARCHAR(255) NOT NULL,
     FOREIGN KEY (department) REFERENCES departments(department_name)
 );
 
