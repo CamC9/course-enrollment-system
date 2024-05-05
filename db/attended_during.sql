@@ -2,7 +2,8 @@ CREATE TABLE attended_during (
     PID VARCHAR(255) NOT NULL,
     attend_start_date DATE NOT NULL,
     attend_end_date DATE NOT NULL,
-    FOREIGN KEY (PID) REFERENCES students(PID)
+    FOREIGN KEY (PID) REFERENCES students(PID),
+    PRIMARY KEY (PID, attend_start_date, attend_end_date)
 );
 
 -- Valid PID and range
