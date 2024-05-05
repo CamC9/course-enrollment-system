@@ -3,25 +3,16 @@ CREATE TABLE advised_by (
     faculty_name VARCHAR(255) NOT NULL,
     PRIMARY KEY (PID, faculty_name),
     FOREIGN KEY (PID) REFERENCES students(PID),
-    FOREIGN KEY (faculty_name) REFERENCES faculty(faculty_name)
+    FOREIGN KEY (faculty_name) REFERENCES faculty(name)
 );
 
 -- Valid PID
-INSERT INTO delegates_committee (PID, faculty_name)
-    VALUES ('A99', 'John Doe');
-
--- Invalid PID
-INSERT INTO delegates_committee (PID, faculty_name)
-    VALUES ('NOT_A_PID', 'Test');
-
--- Invalid faculty_name
-INSERT INTO delegates_committee (PID, faculty_name)
-    VALUES ('A99', 'NOT_A_FACULTY_NAME');
-
--- Duplicate entry
-INSERT INTO delegates_committee (PID, faculty_name)
+INSERT INTO advised_by (PID, faculty_name)
     VALUES ('A99', 'John Doe');
 
 -- Same faculty, different student
-INSERT INTO delegates_committee (PID, faculty_name)
+INSERT INTO advised_by (PID, faculty_name)
     VALUES ('A88', 'John Doe');
+
+INSERT INTO advised_by (PID, faculty_name)
+    VALUES ('A1', 'Jane Doe');

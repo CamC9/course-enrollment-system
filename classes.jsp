@@ -8,10 +8,11 @@
             <td>
                 <table>
                     <tr>
-                        <th>PID</th>
                         <th>CourseName</th>  <!-- The CourseName has to refer to a Course already entered -->
-                        <th>Title</th>
+                        <th>ClassTitle</th>
                         <th>Quarter</th>
+                        <th>Year</th>
+                        <th>OfferingID</th>
                     </tr>
 
         <!--
