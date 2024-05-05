@@ -7,3 +7,15 @@ CREATE TABLE faculty (
 -- Regular entry
 INSERT INTO faculty (name, title, department) 
     VALUES ('John Doe', 'Professor', 'Computer Science');
+
+-- Valid entry
+INSERT INTO faculty (name, title, department) 
+    VALUES ('Jane Doe', 'Professor', 'Computer Science');
+
+-- Valid entry
+INSERT INTO faculty (name, title, department) 
+    VALUES ('Jin Doe', 'Professor', 'Computer Science');
+
+-- Valid entry
+INSERT INTO faculty (name, title, department) 
+    VALUES ('Jackson Doe', 'Professor', 'Computer Science');
