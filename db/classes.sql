@@ -1,8 +1,8 @@
 CREATE TABLE classes (
     course_name VARCHAR(255) NOT NULL,
     class_title VARCHAR(255) NOT NULL,
-    year int NOT NULL,
     quarter VARCHAR(255) NOT NULL,
+    year int NOT NULL,
     offering_id int PRIMARY KEY,
     FOREIGN KEY (course_name) REFERENCES courses(course_name)
 );
