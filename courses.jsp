@@ -120,8 +120,8 @@
                         <tr>
                             <form action="courses.jsp" method="get">
                                 <input type="hidden" name="action" value="update" />
-                                <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="15" /></td>
-                                <td><input value="<%= rs.getString("department") %>" name="department" size="15" /></td>
+                                <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="12" /></td>
+                                <td><input value="<%= rs.getString("department") %>" name="department" size="20" /></td>
                                 <td><input value="<%= rs.getBoolean("needs_instructor_consent") %>" name="needs_instructor_consent" size="25" /></td>
                                 <td><input value="<%= rs.getBoolean("requires_lab_work") %>" name="requires_lab_work" size="20" /></td>
                                 <td><input value="<%= rs.getInt("min_unit") %>" name="min_unit" size="10" /></td>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Class Information</title>
+    <title>Class Section Information</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
@@ -15,20 +15,16 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>course_name</th>
-                            <th>class_title</th>
-                            <th>quarter</th>
-                            <th>year</th>
-                            <th>offering_id</th>
+                            <th>class_offering_id</th>
+                            <th>instructor</th>
+                            <th>section_id</th>
                         </tr>
                         <tr>
-                            <form action="classes.jsp" method="get">
+                            <form action="class_sections.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="course_name" size="3" />
-                                <input type="text" name="class_title" size="11" />
-                                <input type="text" name="quarter" size="4" />
-                                <input type="text" name="year" size="6" />
-                                <input type="text" name="offering_id" size="6" />
+                                <input type="text" name="class_offering_id" size="3" />
+                                <input type="text" name="instructor" size="11" />
+                                <input type="text" name="section_id" size="4" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -50,14 +46,12 @@
                                     conn.setAutoCommit(false);
                                     
                                     // Create the prepared Statement
-                                    // Then INSERT the data into the classes table
+                                    // Then INSERT the data into the enrollment table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO classes VALUES (?, ?, ?, ?, ?)");
-                                    pstmt.setString(1, request.getParameter("course_name"));
-                                    pstmt.setString(2, request.getParameter("class_title"));
-                                    pstmt.setString(3, request.getParameter("quarter"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("year")));
-                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("offering_id")));
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO class_sections VALUES (?, ?, ?)");
+                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("class_offering_id")));
+                                    pstmt.setString(2, request.getParameter("instructor"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -65,12 +59,10 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE classes SET course_name = ?, class_title = ?, quarter = ?, year = ? WHERE offering_id = ?"); 
-                                    pstmt.setString(1, request.getParameter("course_name"));
-                                    pstmt.setString(2, request.getParameter("class_title"));
-                                    pstmt.setString(3, request.getParameter("quarter"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("year")));
-                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("offering_id")));
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE class_sections SET class_offering_id = ?, instructor = ? WHERE section_id = ?"); 
+                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("class_offering_id")));
+                                    pstmt.setString(2, request.getParameter("instructor"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -78,30 +70,28 @@
 
                                 if (action != null && action.equals("delete")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("DELETE FROM classes WHERE offering_id = ?");
-                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("offering_id")));
+                                    PreparedStatement pstmt = conn.prepareStatement("DELETE FROM class_sections WHERE section_id = ?");
+                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("section_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
                                 }
 
-                                rs = stmt.executeQuery("SELECT * FROM classes");
+                                rs = stmt.executeQuery("SELECT * FROM class_sections");
                                 while (rs.next()) {
                         %>
                             <tr>
-                                <form action="classes.jsp" method="get">
+                                <form action="class_sections.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="12"></td>
-                                    <td><input value="<%= rs.getString("class_title") %>" name="class_title" size="40"></td>
-                                    <td><input value="<%= rs.getString("quarter") %>" name="quarter" size="10"></td>
-                                    <td><input value="<%= rs.getInt("year") %>" name="year" size="10"></td>
-                                    <td><input value="<%= rs.getInt("offering_id") %>" name="offering_id" size="10"></td>
+                                    <td><input type="text" name="class_offering_id" value="<%= rs.getInt("class_offering_id") %>" size="3" /></td>
+                                    <td><input type="text" name="instructor" value="<%= rs.getString("instructor") %>" size="11" /></td>
+                                    <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="4" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>
-                                    <form action="classes.jsp" method="get">
+                                    <form action="class_sections.jsp" method="get">
                                         <input type="hidden" name="action" value="delete" />
-                                        <input type="hidden" name="offering_id" value="<%= rs.getInt("offering_id") %>" />
+                                        <input type="hidden" name="section_id" value="<%= rs.getInt("section_id") %>" />
                                         <input type="submit" value="Delete" />
                                     </form>
                                 </td>

@@ -1,5 +1,6 @@
 CREATE TABLE enrollment (
     student_pid VARCHAR(255) NOT NULL,
+    course_name VARCHAR(255) NOT NULL,
     section_id int NOT NULL,
     grade VARCHAR(255),
     enrollment_id int PRIMARY KEY,
