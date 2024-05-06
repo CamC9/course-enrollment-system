@@ -16,6 +16,7 @@
                     <thead>
                         <tr>
                             <th>student_pid</th>
+                            <th>course_name</th>
                             <th>section_id</th>
                             <th>grade</th>
                             <th>enrollment_id</th>
@@ -24,6 +25,7 @@
                             <form action="enrollment.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
                                 <input type="text" name="student_pid" size="3" />
+                                <input type="text" name="course_name" size="11" />
                                 <input type="text" name="section_id" size="11" />
                                 <input type="text" name="grade" size="4" />
                                 <input type="text" name="enrollment_id" size="6" />
@@ -50,11 +52,12 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the enrollment table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO enrollment VALUES (?, ?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO enrollment VALUES (?, ?, ?, ?, ?)");
                                     pstmt.setString(1, request.getParameter("student_pid"));
-                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("section_id")));
-                                    pstmt.setString(3, request.getParameter("grade"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_id")));
+                                    pstmt.setString(2, request.getParameter("course_name"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
+                                    pstmt.setString(4, request.getParameter("grade"));
+                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("enrollment_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -62,11 +65,12 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE enrollment SET student_pid = ?, section_id = ?, grade = ? WHERE enrollment_id = ?");
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE enrollment SET student_pid = ?, course_name = ?, section_id = ?, grade = ? WHERE enrollment_id = ?");
                                     pstmt.setString(1, request.getParameter("student_pid"));
-                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("section_id")));
-                                    pstmt.setString(3, request.getParameter("grade"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_id")));
+                                    pstmt.setString(2, request.getParameter("course_name"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
+                                    pstmt.setString(4, request.getParameter("grade"));
+                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("enrollment_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -88,6 +92,7 @@
                                 <form action="enrollment.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
                                     <td><input type="text" name="student_pid" value="<%= rs.getString("student_pid") %>" size="3" /></td>
+                                    <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="11" /></td>
                                     <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="11" /></td>
                                     <td><input type="text" name="grade" value="<%= rs.getString("grade") %>" size="4" /></td>
                                     <td><input type="text" name="enrollment_id" value="<%= rs.getInt("enrollment_id") %>" size="6" /></td>
