@@ -15,6 +15,7 @@
                 <table border="1">
                     <thead>
                         <tr>
+                            <th>course_name</th>
                             <th>class_offering_id</th>
                             <th>instructor</th>
                             <th>section_id</th>
@@ -22,6 +23,7 @@
                         <tr>
                             <form action="class_sections.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
+                                <input type="text" name="course_name" size="7" />
                                 <input type="text" name="class_offering_id" size="3" />
                                 <input type="text" name="instructor" size="11" />
                                 <input type="text" name="section_id" size="4" />
@@ -48,10 +50,11 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the enrollment table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO class_sections VALUES (?, ?, ?)");
-                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("class_offering_id")));
-                                    pstmt.setString(2, request.getParameter("instructor"));
-                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO class_sections VALUES (?, ?, ?, ?)");
+                                    pstmt.setString(1, request.getParameter("course_name"));
+                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("class_offering_id")));
+                                    pstmt.setString(3, request.getParameter("instructor"));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("section_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -59,10 +62,11 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE class_sections SET class_offering_id = ?, instructor = ? WHERE section_id = ?"); 
-                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("class_offering_id")));
-                                    pstmt.setString(2, request.getParameter("instructor"));
-                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE class_sections SET course_name = ?, class_offering_id = ?, instructor = ? WHERE section_id = ?"); 
+                                    pstmt.setString(1, request.getParameter("course_name"));
+                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("class_offering_id")));
+                                    pstmt.setString(3, request.getParameter("instructor"));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("section_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -83,6 +87,7 @@
                             <tr>
                                 <form action="class_sections.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
+                                    <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="12" /></td>
                                     <td><input type="text" name="class_offering_id" value="<%= rs.getInt("class_offering_id") %>" size="3" /></td>
                                     <td><input type="text" name="instructor" value="<%= rs.getString("instructor") %>" size="11" /></td>
                                     <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="4" /></td>

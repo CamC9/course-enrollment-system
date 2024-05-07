@@ -3,6 +3,12 @@
 <head>
     <title>Enrollment Information</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <script>
+        function updateSectionId() {
+            var sectionId = document.getElementById('sectionSelect').value;
+            document.getElementById('selectedSectionId').value = sectionId;
+        }
+    </script>
 </head>
 <body>
     <table>
@@ -23,17 +29,71 @@
                         </tr>
                         <tr>
                             <form action="enrollment.jsp" method="get">
-                                <input type="hidden" name="action" value="add" />
-                                <input type="text" name="student_pid" size="3" />
-                                <input type="text" name="course_name" size="11" />
-                                <input type="text" name="section_id" size="11" />
-                                <input type="text" name="grade" size="4" />
-                                <input type="text" name="enrollment_id" size="6" />
-                                <input type="submit" value="Add" />
+                                <input type="hidden" name="action" value="select" />
+                                <input type="text" name="course_name" size="11" placeholder="Course Name" />
+                                <input type="submit" value="Select Section" />
+                                <select name="section_id" id="sectionSelect" onchange="updateSectionId()">
+                                    <% 
+                                        Connection conn1 = null;
+                                        Statement stmt1 = null;
+                                        ResultSet rs1 = null;
+                                        try {
+                                            Class.forName("org.postgresql.Driver");
+                                            conn1 = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
+                                            stmt1 = conn1.createStatement();
+                                            
+                                            String action = request.getParameter("action");
+                                            if (action != null && action.equals("select")) {
+                                                conn1.setAutoCommit(false);
+                                                String courseName = request.getParameter("course_name");
+                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT section_id FROM class_sections WHERE course_name = ?");
+                                                pstmt.setString(1, courseName);
+                                                rs1 = pstmt.executeQuery();
+                                                conn1.commit();
+                                                conn1.setAutoCommit(true);
+                                            }
+                                            
+                                            // Iterate over the result set and generate the options
+                                            while (rs1.next()) {
+                                                int sectionId = rs1.getInt("section_id");
+                                                %>
+                                                <option value="<%= sectionId %>">section_id <%= sectionId %></option>
+                                                <%
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            try {
+                                                if (rs1 != null) {
+                                                    rs1.close();
+                                                }
+                                                if (stmt1 != null) {
+                                                    stmt1.close();
+                                                }
+                                                if (conn1 != null) {
+                                                    conn1.close();
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    %>
+                                </select>
                             </form>
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <form action="enrollment.jsp" method="get">
+                                <input type="hidden" name="action" value="add" />
+                                <input type="text" name="student_pid" size="3" />
+                                <input type="text" name="grade" size="4" />
+                                <input type="text" name="enrollment_id" size="6" />
+                                <input type="hidden" name="course_name" value="<%= request.getParameter("course_name") %>" />
+                                <input type="hidden" name="section_id" id="selectedSectionId" />
+                                <input type="submit" value="Add" />
+                            </form>
+                        </tr>
 
                         <%
                             Connection conn = null;
