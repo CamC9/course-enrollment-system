@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Enrollment Information</title>
+    <title>Past Enrollment Information</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         function updateSectionId() {

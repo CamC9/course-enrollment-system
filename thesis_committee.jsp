@@ -9,7 +9,7 @@
                 <table>
                     <tr>
                         <th>PID</th>
-                        <th>Advisor</th>
+                        <th>faculty</th>
                     </tr>
 
         <!--

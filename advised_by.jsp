@@ -8,9 +8,8 @@
             <td>
                 <table>
                     <tr>
-                        <th>Class</th>
-                        <th>Grade</th>  <!-- Can be incomplete or actual grade -->
-                        <th>Quarter</th>
+                        <th>PID</th>
+                        <th>Advisor</th>
                     </tr>
 
         <!--
