@@ -7,7 +7,6 @@ CREATE TABLE classes (
     FOREIGN KEY (course_name) REFERENCES courses(course_name)
 );
 
--- Valid entriess
 INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('CSE_132B', 'Database Systems Applications', 'SPRING', 2018, 1);
 
@@ -19,10 +18,17 @@ INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
 INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('CSE_105', 'Intro to Algorithms', 'WINTER', 2019, 4);
 
--- Valid entry
 INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('CSE_156', 'Statistical Natural Language Processing', 'WINTER', 2018, 5); 
 
--- Valid entry
 INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
     VALUES ('COGS_112', 'Humor', 'SPRING', 2018, 2);
+
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
+    VALUES ('CSE_156', 'Statistical Natural Language Processing', 'SPRING', 2017, 10);
+
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
+    VALUES ('CSE_156', 'Statistical Natural Language Processing', 'WINTER', 2017, 11);
+
+INSERT INTO classes (course_name, class_title, quarter, year, offering_id)
+    VALUES ('CSE_132B', 'Database Systems Applications', 'FALL', 2016, 12);

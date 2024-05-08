@@ -8,6 +8,9 @@
             var sectionId = document.getElementById('sectionSelect').value;
             document.getElementById('selectedSectionId').value = sectionId;
         }
+        window.onload = function() {
+            updateSectionId();  // The initial section_id is now set when the page loads
+        }
     </script>
 </head>
 <body>
@@ -29,7 +32,9 @@
                         <tr>
                             <form action="enrollment.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
-                                <input type="text" name="course_name" size="11" placeholder="Course Name" />
+                                <input type="text" name="student_pid" size="3" placeholder="PID" />
+                                <input type="text" name="course_name" size="12" placeholder="Course Name" />
+                                <input type="text" name="enrollment_id" size="12" placeholder="Enrollment ID" />
                                 <input type="submit" value="Select Section" />
                                 <select name="section_id" id="sectionSelect" onchange="updateSectionId()">
                                     <% 
@@ -85,9 +90,9 @@
                         <tr>
                             <form action="enrollment.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="student_pid" size="3" />
-                                <input type="text" name="enrollment_id" size="6" />
+                                <input type="hidden" name="student_pid" value="<%= request.getParameter("student_pid") %>" />       
                                 <input type="hidden" name="course_name" value="<%= request.getParameter("course_name") %>" />
+                                <input type="hidden" name="enrollment_id" value="<%= request.getParameter("enrollment_id") %>" />
                                 <input type="hidden" name="section_id" id="selectedSectionId" />
                                 <input type="submit" value="Add" />
                             </form>
@@ -150,7 +155,7 @@
                                     <td><input type="text" name="student_pid" value="<%= rs.getString("student_pid") %>" size="3" /></td>
                                     <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="11" /></td>
                                     <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="11" /></td>
-                                    <td><input type="text" name="enrollment_id" value="<%= rs.getInt("enrollment_id") %>" size="6" /></td>
+                                    <td><input type="text" name="enrollment_id" value="<%= rs.getInt("enrollment_id") %>" size="13" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>

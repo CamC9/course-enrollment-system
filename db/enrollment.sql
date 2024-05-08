@@ -10,8 +10,8 @@ CREATE TABLE enrollment (
 
 -- Valid entries, make sure section id 1 exists
 INSERT INTO enrollment (student_pid, course_name, section_id, enrollment_id) 
-    VALUES ('A88', 'CSE_156', 1, 1);
+    VALUES ('A88', 'CSE_156', 2, 1);
 INSERT INTO enrollment (student_pid, course_name, section_id, enrollment_id)
-    VALUES ('A99', 'CSE_156', 1, 2);
+    VALUES ('A99', 'CSE_156', 10, 2);
 INSERT INTO enrollment (student_pid, course_name, section_id, enrollment_id)
     VALUES ('A99', 'CSE_132B', 1, 3);

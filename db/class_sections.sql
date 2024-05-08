@@ -19,3 +19,15 @@ INSERT INTO class_sections (course_name, class_offering_id, instructor, section_
 -- Valid entry
 INSERT INTO class_sections (course_name, class_offering_id, instructor, section_id)
     VALUES ('COGS_112', 2, 'Jane Doe', 3);
+
+-- Valid entry
+INSERT INTO class_sections (course_name, class_offering_id, instructor, section_id)
+    VALUES ('CSE_156', 10, 'Jane Doe', 10);
+
+-- Valid entry
+INSERT INTO class_sections (course_name, class_offering_id, instructor, section_id)
+    VALUES ('CSE_156', 11, 'Jane Doe', 11);
+
+-- Valid entry
+INSERT INTO class_sections (course_name, class_offering_id, instructor, section_id)
+    VALUES ('CSE_132B', 12, 'Jane Doe', 12);
