@@ -89,8 +89,8 @@
                                     pstmt.setString(6, request.getParameter("residency"));
                                     pstmt.setBoolean(7, Boolean.parseBoolean(request.getParameter("is_enrolled")));
                                     pstmt.setString(8, request.getParameter("graduate_status"));
-                                    pstmt.setString(9, request.getParameter("PID"));
-                                    pstmt.setString(10, request.getParameter("department"));
+                                    pstmt.setString(9, request.getParameter("department"));
+                                    pstmt.setString(10, request.getParameter("PID"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
