@@ -1,12 +1,13 @@
 CREATE TABLE section_meetings (
     class_title VARCHAR(255),
-    section_id int PRIMARY KEY,
+    section_id int NOT NULL,
     meeting_type VARCHAR(255) NOT NULL,
     building_and_room VARCHAR(255) NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     date DATE NOT NULL, 
     is_recurring BOOLEAN NOT NULL,
+    meeting_id SERIAL PRIMARY KEY,
     FOREIGN KEY (section_id) REFERENCES class_sections(section_id)
 );
 
