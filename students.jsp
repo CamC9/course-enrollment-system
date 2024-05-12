@@ -29,16 +29,16 @@
                         <tr>
                             <form action="students.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="PID" size="3" />
-                                <input type="text" name="SSN" size="11" />
-                                <input type="text" name="first" size="4" />
-                                <input type="text" name="middle" size="6" />
-                                <input type="text" name="last" size="6" />
-                                <input type="text" name="college" size="6" />
-                                <input type="text" name="residency" size="11" />
-                                <input type="text" name="is_enrolled" size="9" />
-                                <input type="text" name="graduate_status" size="15" />
-                                <input type="text" name="department" size="15" />
+                                <input type="text" name="PID" size="6" placeholder="PID" />
+                                <input type="text" name="SSN" size="12" placeholder="SSN" />
+                                <input type="text" name="first" size="11" placeholder="First" />
+                                <input type="text" name="middle" size="9" placeholder="Middle" />
+                                <input type="text" name="last" size="11" placeholder="Last" />
+                                <input type="text" name="college" size="7" placeholder="College" />
+                                <input type="text" name="residency" size="12" placeholder="Residency" />
+                                <input type="text" name="is_enrolled" size="10" placeholder="Is Enrolled" />
+                                <input type="text" name="graduate_status" size="16" placeholder="Graduate Status" />
+                                <input type="text" name="department" size="18" placeholder="Department" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -76,6 +76,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("students.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -94,6 +95,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("students.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -103,6 +105,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("students.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM students");
@@ -111,12 +114,12 @@
                             <tr>
                                 <form action="students.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input value="<%= rs.getString("PID") %>" name="PID" size="3"></td>
+                                    <td><input value="<%= rs.getString("PID") %>" name="PID" size="5"></td>
                                     <td><input value="<%= rs.getInt("SSN") %>" name="SSN" size="11"></td>
-                                    <td><input value="<%= rs.getString("first") %>" name="first" size="4"></td>
-                                    <td><input value="<%= rs.getString("middle") %>" name="middle" size="6"></td>
-                                    <td><input value="<%= rs.getString("last") %>" name="last" size="6"></td>
-                                    <td><input value="<%= rs.getString("college") %>" name="college" size="6"></td>
+                                    <td><input value="<%= rs.getString("first") %>" name="first" size="10"></td>
+                                    <td><input value="<%= rs.getString("middle") %>" name="middle" size="8"></td>
+                                    <td><input value="<%= rs.getString("last") %>" name="last" size="10"></td>
+                                    <td><input value="<%= rs.getString("college") %>" name="college" size="7"></td>
                                     <td><input value="<%= rs.getString("residency") %>" name="residency" size="11"></td>
                                     <td><input value="<%= rs.getBoolean("is_enrolled") %>" name="is_enrolled" size="9"></td>
                                     <td><input value="<%= rs.getString("graduate_status") %>" name="graduate_status" size="15"></td>

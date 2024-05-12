@@ -191,8 +191,8 @@
                             <tr>
                                 <form action="enrollment.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input type="text" name="student_pid" value="<%= rs.getString("student_pid") %>" size="3" /></td>
-                                    <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="11" /></td>
+                                    <td><input type="text" name="student_pid" value="<%= rs.getString("student_pid") %>" size="10" /></td>
+                                    <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="13" /></td>
                                     <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="11" /></td>
                                     <td><input type="text" name="waitlist_spot" value="<%= rs.getInt("waitlist_spot") %>" size="11" /></td>
                                     <td><input type="text" name="enrollment_id" value="<%= rs.getInt("enrollment_id") %>" size="13" /></td>

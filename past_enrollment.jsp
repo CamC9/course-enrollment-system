@@ -40,7 +40,6 @@
                                 <input type="text" name="grade" size="5" placeholder="Grade" />
                                 <input type="text" name="quarter" size="11" placeholder="Quarter" />
                                 <input type="text" name="year" size="11" placeholder="Year" />
-                                <input type="text" name="enrollment_id" size="13" placeholder="Enrollment ID" />
                                 <input type="submit" value="Select Section" />
                                 <select name="section_id" id="pastSectionSelect" onchange="updateSectionId()">
                                     <% 
@@ -128,17 +127,17 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the past_enrollment table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO past_enrollment VALUES (?, ?, ?, ?, ?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO past_enrollment VALUES (?, ?, ?, ?, ?, ?)");
                                     pstmt.setString(1, request.getParameter("student_pid"));
                                     pstmt.setString(2, request.getParameter("course_name"));
                                     pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
                                     pstmt.setString(4, request.getParameter("grade"));
                                     pstmt.setString(5, request.getParameter("quarter"));
                                     pstmt.setInt(6, Integer.parseInt(request.getParameter("year")));
-                                    pstmt.setInt(7, Integer.parseInt(request.getParameter("enrollment_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("past_enrollment.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -154,6 +153,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("past_enrollment.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -163,6 +163,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("past_enrollment.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM past_enrollment");
