@@ -27,6 +27,7 @@
                             <th>student_pid</th>
                             <th>course_name</th>
                             <th>section_id</th>
+                            <th>waitlist_spot</th>
                             <th>enrollment_id</th>
                         </tr>
                         <tr>
@@ -34,7 +35,6 @@
                                 <input type="hidden" name="action" value="select" />
                                 <input type="text" name="student_pid" size="3" placeholder="PID" />
                                 <input type="text" name="course_name" size="12" placeholder="Course Name" />
-                                <input type="text" name="enrollment_id" size="12" placeholder="Enrollment ID" />
                                 <input type="submit" value="Select Section" />
                                 <select name="section_id" id="sectionSelect" onchange="updateSectionId()">
                                     <% 
@@ -111,7 +111,42 @@
                                 String action = request.getParameter("action");
                                 if (action != null && action.equals("add")) {
                                     conn.setAutoCommit(false);
+                                   
+                                    // Fetch the current enrollment and cap for the selected section
+                                    PreparedStatement checkStmt = conn.prepareStatement(
+                                        "SELECT COUNT(*) AS current_enrollment, enrollment_cap FROM enrollment JOIN class_sections ON enrollment.section_id = class_sections.section_id WHERE enrollment.section_id = ? GROUP BY class_sections.enrollment_cap"
+                                    );
+                                    checkStmt.setInt(1, Integer.parseInt(request.getParameter("section_id")));
+                                    ResultSet checkRs = checkStmt.executeQuery();
+                                    int currentEnrollment = 0;
+                                    int enrollmentCap = 0;
+                            
+                                    if (checkRs.next()) {
+                                        currentEnrollment = checkRs.getInt("current_enrollment");
+                                        enrollmentCap = checkRs.getInt("enrollment_cap");
+                                    }
+                            
+                                    // Determine waitlist_spot based on current enrollment and cap
+                                    int waitlistSpot = 0;
+                                    if (currentEnrollment >= enrollmentCap && enrollmentCap > 0) {
+                                        waitlistSpot = currentEnrollment - enrollmentCap + 1; // Waitlist position starts at 1
+                                    }
+                                    System.out.println("Current Enrollment: " + currentEnrollment);
+                                    System.out.println("Enrollment Cap: " + enrollmentCap);
+                                    System.out.println("Waitlist Spot: " + waitlistSpot);
+                                    java.util.logging.Logger logger = java.util.logging.Logger.getLogger("org.postgresql");
+                                    logger.info("Current Enrollment: " + currentEnrollment);
+                                    logger.info("Enrollment Cap: " + enrollmentCap);
+                                    logger.info("Waitlist Spot: " + waitlistSpot);
                                     
+                                    try {
+                                        if (checkStmt != null) {
+                                            checkStmt.close();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
                                     // Create the prepared Statement
                                     // Then INSERT the data into the enrollment table
 
@@ -119,22 +154,25 @@
                                     pstmt.setString(1, request.getParameter("student_pid"));
                                     pstmt.setString(2, request.getParameter("course_name"));
                                     pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_id")));
+                                    pstmt.setInt(4, waitlistSpot);
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("enrollment.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE enrollment SET student_pid = ?, course_name = ?, section_id = ? WHERE enrollment_id = ?");
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE enrollment SET student_pid = ?, course_name = ?, section_id = ?, waitlist_spot = ? WHERE enrollment_id = ?");
                                     pstmt.setString(1, request.getParameter("student_pid"));
                                     pstmt.setString(2, request.getParameter("course_name"));
                                     pstmt.setInt(3, Integer.parseInt(request.getParameter("section_id")));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_id")));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("waitlist_spot")));
+                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("enrollment_id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("enrollment.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -144,6 +182,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("enrollment.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM enrollment");
@@ -155,6 +194,7 @@
                                     <td><input type="text" name="student_pid" value="<%= rs.getString("student_pid") %>" size="3" /></td>
                                     <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="11" /></td>
                                     <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="11" /></td>
+                                    <td><input type="text" name="waitlist_spot" value="<%= rs.getInt("waitlist_spot") %>" size="11" /></td>
                                     <td><input type="text" name="enrollment_id" value="<%= rs.getInt("enrollment_id") %>" size="13" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
