@@ -1,7 +1,7 @@
 CREATE TABLE advised_by (
     PID VARCHAR(255) NOT NULL,
     faculty_name VARCHAR(255) NOT NULL,
-    PRIMARY KEY (PID, faculty_name),
+    id SERIAL PRIMARY KEY,
     FOREIGN KEY (PID) REFERENCES students(PID),
     FOREIGN KEY (faculty_name) REFERENCES faculty(name)
 );
@@ -15,4 +15,4 @@ INSERT INTO advised_by (PID, faculty_name)
     VALUES ('A88', 'John Doe');
 
 INSERT INTO advised_by (PID, faculty_name)
-    VALUES ('A1', 'Jane Doe');
+    VALUES ('A55', 'Jane Doe');
