@@ -8,16 +8,14 @@ CREATE TABLE students (
     residency VARCHAR(255) NOT NULL,
     is_enrolled BOOLEAN NOT NULL,
     graduate_status VARCHAR(255) NOT NULL,
-    department VARCHAR(255),
-    FOREIGN KEY (department) REFERENCES departments(department_name)
+    major VARCHAR(255),
+    minor VARCHAR(255),
+    department VARCHAR(255)
 );
 
-INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, department) 
-    VALUES ('A99', '111223333', 'John', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate', NULL);
-INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, department) 
-    VALUES ('A88', '123456789', 'John', 'Rain', 'Hamm', NULL, 'Out-of-State', TRUE, 'BSMS', 'Cognitive Science');
-INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, department)
-    VALUES ('A77', '987654321', 'Jane', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate', NULL);
-
--- Add a student with college when student is a graduate student for testing
-    
+INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, major, minor, department) 
+    VALUES ('A99', '111223333', 'John', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate', 'Computer Science', 'Mathematics', NULL);
+INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, major, minor, department) 
+    VALUES ('A88', '123456789', 'John', 'Rain', 'Hamm', NULL, 'Out-of-State', TRUE, 'BSMS', NULL, NULL, 'Cognitive Science');
+INSERT INTO students (PID, SSN, first, middle, last, college, residency, is_enrolled, graduate_status, major, minor, department) 
+    VALUES ('A77', '987654321', 'Jane', 'Doe', 'Smith', 'Warren', 'In-State', TRUE, 'Undergraduate', 'Mathematics', 'Cognitive Science', NULL);

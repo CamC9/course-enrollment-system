@@ -24,6 +24,8 @@
                             <th>Residency</th>
                             <th>IsEnrolled</th>
                             <th>GraduateStatus</th>
+                            <th>Major</th>
+                            <th>Minor</th>
                             <th>Department</th>
                         </tr>
                         <tr>
@@ -38,6 +40,8 @@
                                 <input type="text" name="residency" size="12" placeholder="Residency" />
                                 <input type="text" name="is_enrolled" size="10" placeholder="Is Enrolled" />
                                 <input type="text" name="graduate_status" size="16" placeholder="Graduate Status" />
+                                <input type="text" name="major" size="18" placeholder="Major" />
+                                <input type="text" name="minor" size="18" placeholder="Minor" />
                                 <input type="text" name="department" size="18" placeholder="Department" />
                                 <input type="submit" value="Add" />
                             </form>
@@ -62,17 +66,39 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the students table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                    String middle = request.getParameter("middle");
+                                    String major = request.getParameter("major");
+                                    String minor = request.getParameter("minor");
+                                    String department = request.getParameter("department");
                                     pstmt.setString(1, request.getParameter("PID"));
                                     pstmt.setInt(2, Integer.parseInt(request.getParameter("SSN")));
                                     pstmt.setString(3, request.getParameter("first"));
-                                    pstmt.setString(4, request.getParameter("middle"));
+                                    if (middle == null || middle.trim().isEmpty()) {
+                                        pstmt.setString(4, null);
+                                    } else {
+                                        pstmt.setString(4, middle);
+                                    }
                                     pstmt.setString(5, request.getParameter("last"));
                                     pstmt.setString(6, request.getParameter("college"));
                                     pstmt.setString(7, request.getParameter("residency"));
                                     pstmt.setBoolean(8, Boolean.parseBoolean(request.getParameter("is_enrolled")));
                                     pstmt.setString(9, request.getParameter("graduate_status"));
-                                    pstmt.setString(10, request.getParameter("department"));
+                                    if (major == null || major.trim().isEmpty()) {
+                                        pstmt.setString(10, null);
+                                    } else {
+                                        pstmt.setString(10, major);
+                                    }
+                                    if (minor == null || minor.trim().isEmpty()) {
+                                        pstmt.setString(11, null);
+                                    } else {
+                                        pstmt.setString(11, minor);
+                                    }
+                                    if (department == null || department.trim().isEmpty()) {
+                                        pstmt.setString(12, null);
+                                    } else {
+                                        pstmt.setString(12, department);
+                                    }
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -81,17 +107,23 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE students SET SSN = ?, first = ?, middle = ?, last = ?, college = ?, residency = ?, is_enrolled = ?, graduate_status = ?, department = ? WHERE PID = ?");
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE students SET SSN = ?, first = ?, middle = ?, last = ?, college = ?, residency = ?, is_enrolled = ?, graduate_status = ?, major = ?, minor = ?, department = ? WHERE PID = ?");
+                                    String str_middle = request.getParameter("middle");
+                                    String str_major = request.getParameter("major");
+                                    String str_minor = request.getParameter("minor");
+                                    String str_department = request.getParameter("department");
                                     pstmt.setInt(1, Integer.parseInt(request.getParameter("SSN")));
                                     pstmt.setString(2, request.getParameter("first"));
-                                    pstmt.setString(3, request.getParameter("middle"));
+                                    pstmt.setString(3, str_middle);
                                     pstmt.setString(4, request.getParameter("last"));
                                     pstmt.setString(5, request.getParameter("college"));
                                     pstmt.setString(6, request.getParameter("residency"));
                                     pstmt.setBoolean(7, Boolean.parseBoolean(request.getParameter("is_enrolled")));
                                     pstmt.setString(8, request.getParameter("graduate_status"));
-                                    pstmt.setString(9, request.getParameter("department"));
-                                    pstmt.setString(10, request.getParameter("PID"));
+                                    pstmt.setString(9, str_major);
+                                    pstmt.setString(10, str_minor);
+                                    pstmt.setString(11, str_department);
+                                    pstmt.setString(12, request.getParameter("PID"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -123,6 +155,8 @@
                                     <td><input value="<%= rs.getString("residency") %>" name="residency" size="11"></td>
                                     <td><input value="<%= rs.getBoolean("is_enrolled") %>" name="is_enrolled" size="9"></td>
                                     <td><input value="<%= rs.getString("graduate_status") %>" name="graduate_status" size="15"></td>
+                                    <td><input value="<%= rs.getString("major") %>" name="major" size="17"></td>
+                                    <td><input value="<%= rs.getString("minor") %>" name="minor" size="17"></td>
                                     <td><input value="<%= rs.getString("department") %>" name="department" size="17"></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
