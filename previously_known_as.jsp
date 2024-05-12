@@ -16,14 +16,14 @@
                     <thead>
                         <tr>
                             <th>course_name</th>
-                            <th>previous_couse_name</th>
-                            <th>PrerequisiteID</th>
+                            <th>previous_course_name</th>
+                            <th>id</th>
                         </tr>
                         <tr>
-                            <form action="prerequisites.jsp" method="get">
+                            <form action="previously_known_as.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
                                 <input type="text" name="course_name" size="16" placeholder="Course Name" />
-                                <input type="text" name="prerequisite_name" size="18" placeholder="Prerequisite Name" />
+                                <input type="text" name="previous_course_name" size="23" placeholder="Previous Course Name" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -46,64 +46,64 @@
                                      
                                     // Create the prepared Statement
                                     String course_name = request.getParameter("course_name");
-                                    String prerequisite_name = request.getParameter("prerequisite_name");
+                                    String previous_course_name = request.getParameter("previous_course_name");
                                      
-                                    String sql = "INSERT INTO prerequisites (course_name, prerequisite_name) VALUES (?, ?)";
+                                    String sql = "INSERT INTO previously_known_as (course_name, previous_course_name) VALUES (?, ?)";
                                     PreparedStatement ps = conn.prepareStatement(sql);
                                     ps.setString(1, course_name);
-                                    ps.setString(2, prerequisite_name);
+                                    ps.setString(2, previous_course_name);
                                      
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
-                                    response.sendRedirect("prerequisites.jsp");
+                                    response.sendRedirect("previously_known_as.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
                                     String course_name = request.getParameter("course_name");
-                                    String prerequisite_name = request.getParameter("prerequisite_name");
-                                    Integer prerequisite_id = Integer.parseInt(request.getParameter("prerequisite_id"));
-                                    String sql = "UPDATE prerequisites SET course_name = ?, prerequisite_name = ? WHERE prerequisite_id = ?";
+                                    String previous_course_name = request.getParameter("previous_course_name");
+                                    Integer id = Integer.parseInt(request.getParameter("id"));
+                                    String sql = "UPDATE previously_known_as SET course_name = ?, previous_course_name = ? WHERE id = ?";
                                     PreparedStatement ps = conn.prepareStatement(sql);
                                     ps.setString(1, course_name);
-                                    ps.setString(2, prerequisite_name);
-                                    ps.setInt(3, prerequisite_id);
+                                    ps.setString(2, previous_course_name);
+                                    ps.setInt(3, id);
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
-                                    response.sendRedirect("prerequisites.jsp");
+                                    response.sendRedirect("previously_known_as.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
                                     conn.setAutoCommit(false);
-                                    Integer prerequisite_id = Integer.parseInt(request.getParameter("prerequisite_id"));
+                                    Integer id = Integer.parseInt(request.getParameter("id"));
                                      
-                                    String sql = "DELETE FROM prerequisites WHERE prerequisite_id = ?";
+                                    String sql = "DELETE FROM previously_known_as WHERE id = ?";
                                     PreparedStatement ps = conn.prepareStatement(sql);
-                                    ps.setInt(1, prerequisite_id);
+                                    ps.setInt(1, id);
                                      
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
-                                    response.sendRedirect("prerequisites.jsp");
+                                    response.sendRedirect("previously_known_as.jsp");
                                 }
                                  
                                 // Get the data from the database
-                                rs = stmt.executeQuery("SELECT * FROM prerequisites");
+                                rs = stmt.executeQuery("SELECT * FROM previously_known_as");
                                 while (rs.next()) {
                         %>
                         <tr>
-                            <form action="prerequisites.jsp" method="get">
+                            <form action="previously_known_as.jsp" method="get">
                                 <input type="hidden" name="action" value="update" />
                                 <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="15" /></td>
-                                <td><input value="<%= rs.getString("prerequisite_name") %>" name="prerequisite_name" size="17" /></td>
-                                <td><input value="<%= rs.getInt("prerequisite_id") %>" name="prerequisite_id" size="13" /></td>
+                                <td><input value="<%= rs.getString("previous_course_name") %>" name="previous_course_name" size="22" /></td>
+                                <td><input value="<%= rs.getInt("id") %>" name="id" size="13" /></td>
                                 <td><input type="submit" value="Update" /></td>
                             </form>
-                            <form action="prerequisites.jsp" method="get">
+                            <form action="previously_known_as.jsp" method="get">
                                 <input type="hidden" name="action" value="delete" />
-                                <input type="hidden" name="prerequisite_id" value="<%= rs.getInt("prerequisite_id") %>" />
+                                <input type="hidden" name="id" value="<%= rs.getInt("id") %>" />
                                 <td><input type="submit" value="Delete" /></td>
                             </form>
                         </tr>
