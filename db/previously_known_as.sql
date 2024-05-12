@@ -1,6 +1,7 @@
 CREATE TABLE previously_known_as (
-    course_name VARCHAR(255) PRIMARY KEY,
+    course_name VARCHAR(255) NOT NULL,
     previous_course_name VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
     FOREIGN KEY (course_name) REFERENCES courses(course_name),
     FOREIGN KEY (previous_course_name) REFERENCES courses(course_name)
 );
