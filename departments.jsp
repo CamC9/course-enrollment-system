@@ -22,9 +22,9 @@
                         <tr>
                             <form action="departments.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="department_name" size="20" />
-                                <input type="text" name="total_units_req" size="6" />
-                                <input type="text" name="lower_div_units_req" size="6" />
+                                <input type="text" name="department_name" size="21" placeholder="Department Name" />
+                                <input type="text" name="total_units_req" size="15" placeholder="Total Units Req" />
+                                <input type="text" name="lower_div_units_req" size="19" placeholder="Lower Div Units Req" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -55,6 +55,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("departments.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -66,6 +67,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("departments.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -75,6 +77,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("departments.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM departments");
@@ -84,8 +87,8 @@
                                 <form action="departments.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
                                     <td><input value="<%= rs.getString("department_name") %>" name="department_name" size="20"></td>
-                                    <td><input value="<%= rs.getInt("total_units_req") %>" name="total_units_req" size="6"></td>
-                                    <td><input value="<%= rs.getInt("lower_div_units_req") %>" name="lower_div_units_req" size="6"></td>
+                                    <td><input value="<%= rs.getInt("total_units_req") %>" name="total_units_req" size="14"></td>
+                                    <td><input value="<%= rs.getInt("lower_div_units_req") %>" name="lower_div_units_req" size="18"></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>

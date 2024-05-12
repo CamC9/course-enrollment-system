@@ -24,11 +24,11 @@
                         <tr>
                             <form action="classes.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="course_name" size="3" />
-                                <input type="text" name="class_title" size="11" />
-                                <input type="text" name="quarter" size="4" />
-                                <input type="text" name="year" size="6" />
-                                <input type="text" name="offering_id" size="6" />
+                                <input type="text" name="course_name" size="13" placeholder="Course Name" />
+                                <input type="text" name="class_title" size="41" placeholder="Class Title" />
+                                <input type="text" name="quarter" size="11" placeholder="Quarter" />
+                                <input type="text" name="year" size="11" placeholder="Year" />
+                                <input type="text" name="offering_id" size="10" placeholder="Offering ID" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -61,6 +61,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("classes.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -74,6 +75,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("classes.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -83,6 +85,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("classes.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM classes");

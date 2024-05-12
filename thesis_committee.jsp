@@ -17,12 +17,13 @@
                         <tr>
                             <th>PID</th>
                             <th>faculty_name</th>
+                            <th>id</th>
                         </tr>
                         <tr>
                             <form action="thesis_committee.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="PID" size="7" />
-                                <input type="text" name="faculty_name" size="20" />
+                                <input type="text" name="PID" size="8" placeholder="PID" />
+                                <input type="text" name="faculty_name" size="21" placeholder="Faculty Name" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -52,6 +53,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("thesis_committee.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -63,6 +65,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("thesis_committee.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -72,6 +75,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("thesis_committee.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM delegates_committee");

@@ -22,9 +22,9 @@
                         <tr>
                             <form action="faculty.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="Name" size="20" />
-                                <input type="text" name="Title" size="20" />
-                                <input type="text" name="Department" size="20" />
+                                <input type="text" name="Name" size="21" placeholder="Name" />
+                                <input type="text" name="Title" size="21" placeholder="Title" />
+                                <input type="text" name="Department" size="21" placeholder="Department" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -55,6 +55,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("faculty.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -66,6 +67,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("faculty.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -75,6 +77,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("faculty.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM faculty");

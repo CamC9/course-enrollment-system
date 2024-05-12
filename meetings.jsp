@@ -28,14 +28,14 @@
                         <tr>
                             <form action="meetings.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="class_title" size="25" />
-                                <input type="text" name="section_id" size="7" />
-                                <input type="text" name="meeting_type" size="15" />
-                                <input type="text" name="building_and_room" size="25" />
-                                <input type="text" name="start_time" size="15" />
-                                <input type="text" name="end_time" size="15" />
-                                <input type="text" name="date" size="15" />
-                                <input type="text" name="is_recurring" size="15" />
+                                <input type="text" name="class_title" size="26" placeholder="Class Title" />
+                                <input type="text" name="section_id" size="9" placeholder="Section ID" />
+                                <input type="text" name="meeting_type" size="16" placeholder="Meeting Type" />
+                                <input type="text" name="building_and_room" size="19" placeholder="Building And Room" />
+                                <input type="text" name="start_time" size="12" placeholder="Start Time" />
+                                <input type="text" name="end_time" size="12" placeholder="End Time" />
+                                <input type="text" name="date" size="12" placeholder="Date" />
+                                <input type="text" name="is_recurring" size="14" placeholder="Is Recurring" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -106,14 +106,14 @@
                                 <form action="meetings.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
                                     <td><input type="text" value="<%= rs.getString("class_title") %>" name="class_title" size="25" /></td>
-                                    <td><input type="text" value="<%= rs.getInt("section_id") %>" name="section_id" size="7" /></td>
+                                    <td><input type="text" value="<%= rs.getInt("section_id") %>" name="section_id" size="8" /></td>
                                     <td><input type="text" value="<%= rs.getString("meeting_type") %>" name="meeting_type" size="15" /></td>
-                                    <td><input type="text" value="<%= rs.getString("building_and_room") %>" name="building_and_room" size="25" /></td>
-                                    <td><input type="text" value="<%= rs.getTime("start_time") %>" name="start_time" size="15" /></td>
-                                    <td><input type="text" value="<%= rs.getTime("end_time") %>" name="end_time" size="15" /></td>
-                                    <td><input type="text" value="<%= rs.getDate("date") %>" name="date" size="15" /></td>
-                                    <td><input type="text" value="<%= rs.getBoolean("is_recurring") %>" name="is_recurring" size="15" /></td>
-                                    <td><input type="text" value="<%= rs.getInt("meeting_id") %>" name="meeting_id" size="6" /></td>
+                                    <td><input type="text" value="<%= rs.getString("building_and_room") %>" name="building_and_room" size="18" /></td>
+                                    <td><input type="text" value="<%= rs.getTime("start_time") %>" name="start_time" size="11" /></td>
+                                    <td><input type="text" value="<%= rs.getTime("end_time") %>" name="end_time" size="11" /></td>
+                                    <td><input type="text" value="<%= rs.getDate("date") %>" name="date" size="11" /></td>
+                                    <td><input type="text" value="<%= rs.getBoolean("is_recurring") %>" name="is_recurring" size="13" /></td>
+                                    <td><input type="text" value="<%= rs.getInt("meeting_id") %>" name="meeting_id" size="9" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>

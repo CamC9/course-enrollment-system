@@ -24,10 +24,10 @@
                         <tr>
                             <form action="probation.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="PID" size="7" />
-                                <input type="text" name="start_date" size="15" />
-                                <input type="text" name="end_date" size="15" />
-                                <input type="text" name="reason" size="25" />
+                                <input type="text" name="PID" size="8" placeholder="PID" />
+                                <input type="text" name="start_date" size="16" placeholder="Start Date" />
+                                <input type="text" name="end_date" size="16" placeholder="End Date" />
+                                <input type="text" name="reason" size="26" placeholder="Reason" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -59,6 +59,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("probation.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -72,6 +73,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("probation.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -81,6 +83,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("probation.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM probation_period");

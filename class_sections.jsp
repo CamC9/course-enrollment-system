@@ -24,11 +24,11 @@
                         <tr>
                             <form action="class_sections.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="course_name" size="12" placeholder="Course Name" />
-                                <input type="text" name="class_offering_id" size="12" placeholder="Offering ID" />
-                                <input type="text" name="instructor" size="15" placeholder="Instructor" />
-                                <input type="text" name="enrollment_cap" size="13" placeholder="Enrollment Cap" />
-                                <input type="text" name="section_id" size="11" placeholder="Section ID" />
+                                <input type="text" name="course_name" size="13" placeholder="Course Name" />
+                                <input type="text" name="class_offering_id" size="17" placeholder="Class Offering ID" />
+                                <input type="text" name="instructor" size="12" placeholder="Instructor" />
+                                <input type="text" name="enrollment_cap" size="15" placeholder="Enrollment Cap" />
+                                <input type="text" name="section_id" size="9" placeholder="Section ID" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -61,6 +61,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("class_sections.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -74,6 +75,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("class_sections.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -83,6 +85,7 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("class_sections.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM class_sections");
@@ -92,10 +95,10 @@
                                 <form action="class_sections.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
                                     <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="12" /></td>
-                                    <td><input type="text" name="class_offering_id" value="<%= rs.getInt("class_offering_id") %>" size="3" /></td>
+                                    <td><input type="text" name="class_offering_id" value="<%= rs.getInt("class_offering_id") %>" size="16" /></td>
                                     <td><input type="text" name="instructor" value="<%= rs.getString("instructor") %>" size="11" /></td>
-                                    <td><input type="text" name="enrollment_cap" value="<%= rs.getInt("enrollment_cap") %>" size="4" /></td>
-                                    <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="4" /></td>
+                                    <td><input type="text" name="enrollment_cap" value="<%= rs.getInt("enrollment_cap") %>" size="14" /></td>
+                                    <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="8" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>

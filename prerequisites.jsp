@@ -22,9 +22,8 @@
                         <tr>
                             <form action="prerequisites.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="course_name" size="15" />
-                                <input type="text" name="prerequisite_name" size="15" />
-                                <input type="text" name="prerequisite_id" size="6" />
+                                <input type="text" name="course_name" size="16" placeholder="Course Name" />
+                                <input type="text" name="prerequisite_name" size="18" placeholder="Prerequisite Name" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -48,17 +47,16 @@
                                     // Create the prepared Statement
                                     String course_name = request.getParameter("course_name");
                                     String prerequisite_name = request.getParameter("prerequisite_name");
-                                    Integer prerequisite_id = Integer.parseInt(request.getParameter("prerequisite_id"));
                                      
-                                    String sql = "INSERT INTO prerequisites (course_name, prerequisite_name, prerequisite_id) VALUES (?, ?, ?)";
+                                    String sql = "INSERT INTO prerequisites (course_name, prerequisite_name) VALUES (?, ?)";
                                     PreparedStatement ps = conn.prepareStatement(sql);
                                     ps.setString(1, course_name);
                                     ps.setString(2, prerequisite_name);
-                                    ps.setInt(3, prerequisite_id);
                                      
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("prerequisites.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -74,6 +72,7 @@
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("prerequisites.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -87,6 +86,7 @@
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("prerequisites.jsp");
                                 }
                                  
                                 // Get the data from the database
@@ -97,8 +97,8 @@
                             <form action="prerequisites.jsp" method="get">
                                 <input type="hidden" name="action" value="update" />
                                 <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="15" /></td>
-                                <td><input value="<%= rs.getString("prerequisite_name") %>" name="prerequisite_name" size="15" /></td>
-                                <td><input value="<%= rs.getInt("prerequisite_id") %>" name="prerequisite_id" size="6" /></td>
+                                <td><input value="<%= rs.getString("prerequisite_name") %>" name="prerequisite_name" size="17" /></td>
+                                <td><input value="<%= rs.getInt("prerequisite_id") %>" name="prerequisite_id" size="13" /></td>
                                 <td><input type="submit" value="Update" /></td>
                             </form>
                             <form action="prerequisites.jsp" method="get">

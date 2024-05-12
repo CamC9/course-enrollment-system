@@ -26,13 +26,13 @@
                         <tr>
                             <form action="courses.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="course_name" size="20" />
-                                <input type="text" name="department" size="20" />
-                                <input type="text" name="needs_instructor_consent" size="20" />
-                                <input type="text" name="requires_lab_work" size="20" />
-                                <input type="text" name="min_unit" size="20" />
-                                <input type="text" name="max_unit" size="20" />
-                                <input type="text" name="grading_type" size="20" />
+                                <input type="text" name="course_name" size="13" placeholder="Course Name" />
+                                <input type="text" name="department" size="21" placeholder="Department" />
+                                <input type="text" name="needs_instructor_consent" size="26" placeholder="Needs Instructor Consent" />
+                                <input type="text" name="requires_lab_work" size="21" placeholder="Requires Lab Work" />
+                                <input type="text" name="min_unit" size="11" placeholder="Min Units" />
+                                <input type="text" name="max_unit" size="10"placeholder="Max Units" />
+                                <input type="text" name="grading_type" size="16" placeholder="Grading Type" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -75,6 +75,7 @@
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("courses.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -98,6 +99,7 @@
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("courses.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -111,6 +113,7 @@
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
+                                    response.sendRedirect("courses.jsp"); 
                                 }
                                  
                                 // Get the data from the database
