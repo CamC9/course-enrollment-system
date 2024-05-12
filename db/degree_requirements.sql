@@ -7,8 +7,7 @@ CREATE TABLE degree_requirements (
     min_gpa DECIMAL(3, 2) DEFAULT 0.00,
     id SERIAL PRIMARY KEY,
     FOREIGN KEY (degree_name) REFERENCES degrees(degree_name),
-    FOREIGN KEY (department_name) REFERENCES departments(department_name),
-    FOREIGN KEY (concentration_name) REFERENCES concentration(concentration_name)
+    FOREIGN KEY (department_name) REFERENCES departments(department_name)
 );
 
 INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units, min_gpa)
