@@ -131,13 +131,6 @@
                                     if (currentEnrollment >= enrollmentCap && enrollmentCap > 0) {
                                         waitlistSpot = currentEnrollment - enrollmentCap + 1; // Waitlist position starts at 1
                                     }
-                                    System.out.println("Current Enrollment: " + currentEnrollment);
-                                    System.out.println("Enrollment Cap: " + enrollmentCap);
-                                    System.out.println("Waitlist Spot: " + waitlistSpot);
-                                    java.util.logging.Logger logger = java.util.logging.Logger.getLogger("org.postgresql");
-                                    logger.info("Current Enrollment: " + currentEnrollment);
-                                    logger.info("Enrollment Cap: " + enrollmentCap);
-                                    logger.info("Waitlist Spot: " + waitlistSpot);
                                     
                                     try {
                                         if (checkStmt != null) {
