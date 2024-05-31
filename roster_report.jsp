@@ -9,7 +9,7 @@
             document.getElementById('selectedClass').value = Class;
         }
         window.onload = function() {
-            updateClass();  // The initial PID is now set when the page loads
+            updateClass();  // The initial Class is now set when the page loads
         }
     </script>
 </head>
@@ -24,16 +24,15 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>PID</th>
-                            <th>First</th>
-                            <th>Middle</th>
-                            <th>Last</th>
+                            <th>CourseName</th>
+                            <th>Quarter</th>
+                            <th>Year</th>
                         </tr>
                         <tr>
-                            <form action="classes_taken_report.jsp" method="get">
+                            <form action="roster_report.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
-                                <input type="submit" value="Select Student" />
-                                <select name="PID" id="PIDSelect" onchange="updatePID()">
+                                <input type="submit" value="Select Class Name" />
+                                <select name="Class" id="ClassSelect" onchange="updateClass()">
                                     <% 
                                         Connection conn1 = null;
                                         Statement stmt1 = null;
@@ -46,7 +45,7 @@
                                             String action = request.getParameter("action");
                                             if (action != null && action.equals("select")) {
                                                 conn1.setAutoCommit(false);
-                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT PID FROM students");
+                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT class_title FROM classes GROUP BY class_title");
                                                 rs1 = pstmt.executeQuery();
                                                 conn1.commit();
                                                 conn1.setAutoCommit(true);
@@ -54,9 +53,9 @@
                                             
                                             // Iterate over the result set and generate the options
                                             while (rs1.next()) {
-                                                String PID = rs1.getString("PID");
+                                                String Class = rs1.getString("class_title");
                                                 %>
-                                                <option value="<%= PID %>"><%= PID%></option>
+                                                <option value="<%= Class %>"><%= Class %></option>
                                                 <%
                                             }
                                         } catch (Exception e) {
@@ -83,10 +82,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <form action="classes_taken_report.jsp" method="get">
-                                <input type="hidden" name="action" value="show_student_details" />
-                                <input type="hidden" name="PID" id="selectedPID" />
-                                <input type="submit" value="Show Details" />
+                            <form action="roster_report.jsp" method="get">
+                                <input type="hidden" name="action" value="show_class_details" />
+                                <input type="hidden" name="Class" id="selectedClass" />
+                                <input type="submit" value="Show Classes" />
                             </form>
                         </tr>
 
@@ -101,14 +100,14 @@
                                 
                                 // Check if any form data was submitted
                                 String action = request.getParameter("action");
-                                if (action != null && action.equals("show_student_details")) {
+                                if (action != null && action.equals("show_class_details")) {
                                     conn.setAutoCommit(false);
                                    
-                                    // Retrieve all student attributes given the PID
+                                    // Retrieve all student attributes given the Class 
                                     PreparedStatement checkStmt = conn.prepareStatement(
-                                        "SELECT * FROM students WHERE PID = ?");
+                                        "SELECT * FROM classes WHERE class_title = ?");
                                     
-                                    checkStmt.setString(1, request.getParameter("PID"));
+                                    checkStmt.setString(1, request.getParameter("Class"));
                                     ResultSet checkRs = checkStmt.executeQuery();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -118,13 +117,13 @@
                                             while (checkRs.next()) {
                         %>
                             <tr>
-                                <form action="classes_taken_report.jsp" method="get">
-                                    <input type="hidden" name="action" value="show_classes" />
-                                    <td><input type="text" name="PID" value="<%= checkRs.getString("PID") %>" size="10" /></td>
-                                    <td><input type="text" name="First" value="<%= checkRs.getString("first") %>" size="13" /></td>
-                                    <td><input type="text" name="Middle" value="<%= checkRs.getString("middle") %>" size="11" /></td>
-                                    <td><input type="text" name="Last" value="<%= checkRs.getString("last") %>" size="11" /></td>
-                                    <td><input type="submit" value="Show Classes"></td>
+                                <form action="roster_report.jsp" method="get">
+                                    <input type="hidden" name="action" value="show_roster" />
+                                    <td><input type="text" name="Course" value="<%= checkRs.getString("course_name") %>" size="13" /></td>
+                                    <td><input type="text" name="Quarter" value="<%= checkRs.getString("quarter") %>" size="11" /></td>
+                                    <td><input type="text" name="Year" value="<%= checkRs.getString("year") %>" size="11" /></td>
+                                    <td><input type="hidden" name="offering_id" value="<%= checkRs.getInt("offering_id") %>" /></td>
+                                    <td><input type="submit" value="Show Roster"></td>
                                 </form>
                             </tr>
                                 
@@ -138,44 +137,40 @@
 
                                 }
 
-                                if (action != null && action.equals("show_classes")) {
+                                if (action != null && action.equals("show_roster")) {
                                     conn.setAutoCommit(false);
                                     String sql = 
                                         "SELECT " +
-                                        "e.section_id, " +
-                                        "cr.course_name, " +
-                                        "cls.class_title, " +
-                                        "cs.instructor, " +
-                                        "cs.enrollment_cap, " +
+                                        "s.PID, " +
+                                        "s.SSN, " +
+                                        "s.first, " +
+                                        "s.middle, " +
+                                        "s.last, " +
+                                        "s.college, " +
+                                        "s.residency, " +
+                                        "s.is_enrolled, " +
+                                        "s.graduate_status, " +
+                                        "s.major, " +
+                                        "s.minor, " +
+                                        "s.department, " +
                                         "cr.min_unit, " +
                                         "cr.max_unit, " +
-                                        "cr.grading_type, " +
-                                        "cr.needs_instructor_consent, " +
-                                        "cr.requires_lab_work " +
+                                        "cr.grading_type " +
                                         "FROM " +
-                                            "enrollment e " +
+                                            "students s " +
                                         "JOIN " + 
+                                            "enrollment e ON e.student_pid = s.PID " +
+                                        "JOIN " +
                                             "class_sections cs ON e.section_id = cs.section_id " +
                                         "JOIN " + 
                                             "courses cr ON cs.course_name = cr.course_name " +
                                         "JOIN " +
-                                            "classes cls ON cr.course_name = cls.course_name " +
+                                            "classes cls ON cs.class_offering_id = cls.offering_id " +
                                         "WHERE " +
-                                            "e.student_pid = ? " +
-                                        "GROUP BY " +
-                                            "e.section_id, " +
-                                            "cr.course_name, " +
-                                            "cls.class_title, " +
-                                            "cs.instructor, " +
-                                            "cs.enrollment_cap, " +
-                                            "cr.min_unit, " +
-                                            "cr.max_unit, " +
-                                            "cr.grading_type, " +
-                                            "cr.needs_instructor_consent, " +
-                                            "cr.requires_lab_work";
+                                            "cls.offering_id = ?::int ";
 
                                     PreparedStatement pstmt = conn.prepareStatement(sql);
-                                    pstmt.setString(1, request.getParameter("PID"));
+                                    pstmt.setString(1, request.getParameter("offering_id"));
                                     rs = pstmt.executeQuery();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -183,16 +178,21 @@
                         %>
                             <table border="1">
                                 <tr>
-                                    <th>SectionID</th>
-                                    <th>CourseName</th>
-                                    <th>ClassTitle</th>
-                                    <th>Instructor</th>
-                                    <th>EnrollmentCap</th>
-                                    <th>MinUnit</th>
-                                    <th>MaxUnit</th>
-                                    <th>GradingType</th>
-                                    <th>NeedsInstructorConsent</th>
-                                    <th>RequiresLabWork</th>
+                                    <th>PID</th>
+                                    <th>SSN</th>
+                                    <th>First</th>
+                                    <th>Middle</th>
+                                    <th>Last</th>
+                                    <th>College</th>
+                                    <th>Residency</th>
+                                    <th>Is Enrolled</th>
+                                    <th>Graduate Status</th>
+                                    <th>Major</th>
+                                    <th>Minor</th>
+                                    <th>Department</th>
+                                    <th>Min Unit</th>
+                                    <th>Max Unit</th>
+                                    <th>Grading Type</th>
                                 </tr>
                         <%
 
@@ -200,16 +200,21 @@
                                 while (rs.next()) {
                         %>
                             <tr>
-                                <td><%= rs.getInt("section_id") %></td>
-                                <td><%= rs.getString("course_name") %></td>
-                                <td><%= rs.getString("class_title") %></td>
-                                <td><%= rs.getString("instructor") %></td>
-                                <td><%= rs.getInt("enrollment_cap") %></td>
+                                <td><%= rs.getString("PID") %></td>
+                                <td><%= rs.getString("SSN") %></td>
+                                <td><%= rs.getString("first") %></td>
+                                <td><%= rs.getString("middle") %></td>
+                                <td><%= rs.getString("last") %></td>
+                                <td><%= rs.getString("college") %></td>
+                                <td><%= rs.getString("residency") %></td>
+                                <td><%= rs.getBoolean("is_enrolled") %></td>
+                                <td><%= rs.getString("graduate_status") %></td>
+                                <td><%= rs.getString("major") %></td>
+                                <td><%= rs.getString("minor") %></td>
+                                <td><%= rs.getString("department") %></td>
                                 <td><%= rs.getInt("min_unit") %></td>
                                 <td><%= rs.getInt("max_unit") %></td>
                                 <td><%= rs.getString("grading_type") %></td>
-                                <td><%= rs.getBoolean("needs_instructor_consent") %></td>
-                                <td><%= rs.getBoolean("requires_lab_work") %></td>
                             </tr>
                         <%
                                 }
