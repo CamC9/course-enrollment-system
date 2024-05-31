@@ -18,6 +18,7 @@
         <tr>
             <td>
                 <%@ page import="java.sql.*" %>
+                <%@ page import="java.util.ArrayList" %>
                 <jsp:include page="menu.html" />
             </td>
             <td>
@@ -188,22 +189,62 @@
                                     <th>Grade</th>
                                 </tr>
                         <%
+                                String lastQuarter = "";
+                                int lastYear = -1;
+                                ArrayList<Double> allGrades = new ArrayList<Double>();
+                                ArrayList<Double> currQuarterGrades = new ArrayList<Double>();
                                 // Iterate over the result set and generate the table rows
                                 while (rs.next()) {
-                        %>
-                            <tr>
-                                <td><%= rs.getInt("section_id") %></td>
-                                <td><%= rs.getString("course_name") %></td>
-                                <td><%= rs.getString("class_title") %></td>
-                                <td><%= rs.getString("quarter") %></td>
-                                <td><%= rs.getInt("year") %></td>
-                                <td><%= rs.getString("grade") %></td>
-                            </tr>
-                        <%
+                                    %>
+                                        <tr>
+                                            <td><%= rs.getInt("section_id") %></td>
+                                            <td><%= rs.getString("course_name") %></td>
+                                            <td><%= rs.getString("class_title") %></td>
+                                            <td><%= rs.getString("quarter") %></td>
+                                            <td><%= rs.getInt("year") %></td>
+                                            <td><%= rs.getString("grade") %></td>
+                                        </tr>
+                                    <%
+                                    // Need to convert GPA from letter grade to number using grade_conversion table
+                                    if (rs.getString("grade") == null) {
+                                        continue;
+                                    }
+                                    PreparedStatement gradeConversionStmt = conn.prepareStatement("SELECT number_grade FROM grade_conversion WHERE letter_grade = ?");
+                                    gradeConversionStmt.setString(1, rs.getString("grade"));
+                                    ResultSet gradeConversionRs = gradeConversionStmt.executeQuery();
+                                    gradeConversionRs.next();
+                                    double gradeDouble = gradeConversionRs.getDouble("number_grade");
+                                    allGrades.add(gradeDouble);
+                                    if (gradeDouble > 0.0) {
+                                        currQuarterGrades.add(gradeDouble);
+                                        allGrades.add(gradeDouble);
+                                    }
+                                    if ((rs.getString("quarter") != null && !rs.getString("quarter").equals(lastQuarter)) || (rs.getInt("year") != -1 && rs.getInt("year") != lastYear)) {
+                                        %>
+                                        <tr>
+                                            <td>Quarter GPA: <%= String.format("%.2f", currQuarterGrades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0)) %></td>
+                                        </tr>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">&nbsp;</td>
+                                        </tr>
+                                        <%
+                                        // Print a blank row between quarters
+                                        lastQuarter = rs.getString("quarter");
+                                        lastYear = rs.getInt("year");
+                                        currQuarterGrades.clear();
+                                    }
                                 }
-                        %>
-                            </table>
-                        <%
+                                %>
+                                <tr>
+                                    <td colspan="6">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td>Cumulative GPA: <%= String.format("%.2f", allGrades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0)) %></td>
+                                </tr>
+
+                                </table>
+                            <%
                             } catch (Exception e) {
                                 e.printStackTrace();
                             } finally {
