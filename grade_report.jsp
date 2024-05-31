@@ -4,12 +4,12 @@
     <title>Classes Taken By Student Report Form</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
-        function updatePID() {
-            var PID = document.getElementById('PIDSelect').value;
-            document.getElementById('selectedPID').value = PID;
+        function updatePIDGradeReport() {
+            var PID = document.getElementById('PIDSelectGradeReport').value;
+            document.getElementById('selectedPIDGradeReport').value = PID;
         }
         window.onload = function() {
-            updatePID();  // The initial PID is now set when the page loads
+            updatePIDGradeReport();  // The initial PID is now set when the page loads
         }
     </script>
 </head>
@@ -30,10 +30,10 @@
                             <th>Last</th>
                         </tr>
                         <tr>
-                            <form action="classes_taken_report.jsp" method="get">
+                            <form action="grade_report.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
                                 <input type="submit" value="Select Student" />
-                                <select name="PID" id="PIDSelect" onchange="updatePID()">
+                                <select name="PID" id="PIDSelectGradeReport" onchange="updatePIDGradeReport()">
                                     <% 
                                         Connection conn1 = null;
                                         Statement stmt1 = null;
@@ -46,7 +46,7 @@
                                             String action = request.getParameter("action");
                                             if (action != null && action.equals("select")) {
                                                 conn1.setAutoCommit(false);
-                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT PID FROM students JOIN enrollment ON students.PID = enrollment.student_pid GROUP BY PID");
+                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT students.PID FROM students JOIN enrollment ON students.PID = enrollment.student_pid UNION SELECT students.PID FROM students JOIN past_enrollment ON students.PID = past_enrollment.student_pid GROUP BY PID");
                                                 rs1 = pstmt.executeQuery();
                                                 conn1.commit();
                                                 conn1.setAutoCommit(true);
@@ -83,9 +83,9 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <form action="classes_taken_report.jsp" method="get">
+                            <form action="grade_report.jsp" method="get">
                                 <input type="hidden" name="action" value="show_student_details" />
-                                <input type="hidden" name="PID" id="selectedPID" />
+                                <input type="hidden" name="PID" id="selectedPIDGradeReport" />
                                 <input type="submit" value="Show Details" />
                             </form>
                         </tr>
@@ -118,7 +118,7 @@
                                             while (checkRs.next()) {
                         %>
                             <tr>
-                                <form action="classes_taken_report.jsp" method="get">
+                                <form action="grade_report.jsp" method="get">
                                     <input type="hidden" name="action" value="show_classes" />
                                     <td><input type="text" name="PID" value="<%= checkRs.getString("PID") %>" size="10" /></td>
                                     <td><input type="text" name="First" value="<%= checkRs.getString("first") %>" size="13" /></td>
@@ -140,42 +140,39 @@
 
                                 if (action != null && action.equals("show_classes")) {
                                     conn.setAutoCommit(false);
-                                    String sql = 
-                                        "SELECT " +
-                                        "e.section_id, " +
-                                        "cr.course_name, " +
-                                        "cls.class_title, " +
-                                        "cs.instructor, " +
-                                        "cs.enrollment_cap, " +
-                                        "cr.min_unit, " +
-                                        "cr.max_unit, " +
-                                        "cr.grading_type, " +
-                                        "cr.needs_instructor_consent, " +
-                                        "cr.requires_lab_work " +
+
+                                    String sql = "SELECT combined.section_id, combined.course_name, c.class_title, combined.quarter, combined.year, combined.grade " +
                                         "FROM " +
-                                            "enrollment e " +
-                                        "JOIN " + 
-                                            "class_sections cs ON e.section_id = cs.section_id " +
-                                        "JOIN " + 
-                                            "courses cr ON cs.course_name = cr.course_name " +
-                                        "JOIN " +
-                                            "classes cls ON cr.course_name = cls.course_name " +
-                                        "WHERE " +
-                                            "e.student_pid = ? " +
-                                        "GROUP BY " +
-                                            "e.section_id, " +
-                                            "cr.course_name, " +
-                                            "cls.class_title, " +
-                                            "cs.instructor, " +
-                                            "cs.enrollment_cap, " +
-                                            "cr.min_unit, " +
-                                            "cr.max_unit, " +
-                                            "cr.grading_type, " +
-                                            "cr.needs_instructor_consent, " +
-                                            "cr.requires_lab_work";
+                                        "    ( " +
+                                        "        SELECT " +
+                                        "            e.section_id, " +
+                                        "            e.course_name, " +
+                                        "            NULL AS quarter, " +
+                                        "            NULL AS year, " +
+                                        "            NULL AS grade " +
+                                        "        FROM " +
+                                        "            enrollment e " +
+                                        "        WHERE " +
+                                        "            e.student_pid = ? " +
+                                        "        UNION " +
+                                        "        SELECT " +
+                                        "            pe.section_id, " +
+                                        "            pe.course_name, " +
+                                        "            pe.quarter, " +
+                                        "            pe.year, " +
+                                        "            pe.grade " +
+                                        "        FROM " +
+                                        "            past_enrollment pe " +
+                                        "        WHERE " +
+                                        "            pe.student_pid = ? " +
+                                        "    ) combined " +
+                                        "JOIN class_sections s ON s.section_id = combined.section_id " +
+                                        "JOIN classes c ON c.offering_id = s.class_offering_id " +
+                                        "ORDER BY combined.year DESC, combined.quarter DESC ";
 
                                     PreparedStatement pstmt = conn.prepareStatement(sql);
                                     pstmt.setString(1, request.getParameter("PID"));
+                                    pstmt.setString(2, request.getParameter("PID"));
                                     rs = pstmt.executeQuery();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -186,16 +183,11 @@
                                     <th>SectionID</th>
                                     <th>CourseName</th>
                                     <th>ClassTitle</th>
-                                    <th>Instructor</th>
-                                    <th>EnrollmentCap</th>
-                                    <th>MinUnit</th>
-                                    <th>MaxUnit</th>
-                                    <th>GradingType</th>
-                                    <th>NeedsInstructorConsent</th>
-                                    <th>RequiresLabWork</th>
+                                    <th>Quarter</th>
+                                    <th>Year</th>
+                                    <th>Grade</th>
                                 </tr>
                         <%
-
                                 // Iterate over the result set and generate the table rows
                                 while (rs.next()) {
                         %>
@@ -203,13 +195,9 @@
                                 <td><%= rs.getInt("section_id") %></td>
                                 <td><%= rs.getString("course_name") %></td>
                                 <td><%= rs.getString("class_title") %></td>
-                                <td><%= rs.getString("instructor") %></td>
-                                <td><%= rs.getInt("enrollment_cap") %></td>
-                                <td><%= rs.getInt("min_unit") %></td>
-                                <td><%= rs.getInt("max_unit") %></td>
-                                <td><%= rs.getString("grading_type") %></td>
-                                <td><%= rs.getBoolean("needs_instructor_consent") %></td>
-                                <td><%= rs.getBoolean("requires_lab_work") %></td>
+                                <td><%= rs.getString("quarter") %></td>
+                                <td><%= rs.getInt("year") %></td>
+                                <td><%= rs.getString("grade") %></td>
                             </tr>
                         <%
                                 }
