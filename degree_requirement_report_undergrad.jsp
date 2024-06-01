@@ -5,11 +5,16 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         function updateUndergradPID() {
-            var UndergradPID = document.getElementById('UnderGradPIDSelect').value;
+            var UndergradPID = document.getElementById('UndergradPIDSelect').value;
             document.getElementById('selectedUndergradPID').value = UndergradPID;
+        }
+        function updateDegreeName() {
+            var DegreeName = document.getElementById('DegreeNameSelect').value;
+            document.getElementById('selectedDegreeName').value = DegreeName;
         }
         window.onload = function() {
             updateUndergradPID();  // The initial PID is now set when the page loads
+            updateDegreeName();
         }
     </script>
 </head>
@@ -30,7 +35,7 @@
                             <th>Last</th>
                         </tr>
                         <tr>
-                            <form action="degree_requirement_report.jsp" method="get">
+                            <form action="degree_requirement_report_undergrad.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
                                 <input type="submit" value="Select Student" />
                                 <select name="UndergradPID" id="UndergradPIDSelect" onchange="updateUndergradPID()">
@@ -46,7 +51,7 @@
                                             String action = request.getParameter("action");
                                             if (action != null && action.equals("select")) {
                                                 conn1.setAutoCommit(false);
-                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT PID FROM students JOIN enrollment ON students.PID = enrollment.student_pid GROUP BY PID");
+                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT PID FROM students WHERE graduate_status = 'Undergraduate'");
                                                 rs1 = pstmt.executeQuery();
                                                 conn1.commit();
                                                 conn1.setAutoCommit(true);
@@ -80,16 +85,16 @@
                                 </select>
                             </form>
                         </tr>
-                    </thead>
-                    <tbody>
                         <tr>
-                            <form action="classes_taken_report.jsp" method="get">
-                                <input type="hidden" name="action" value="show_student_details" />
-                                <input type="hidden" name="PID" id="selectedPID" />
-                                <input type="submit" value="Show Details" />
+                            <form action="degree_requirement_report_undergrad.jsp" method="get">
+                                <input type="hidden" name="action" value="show_undergrad_details" />
+                                <input type="hidden" name="UndergradPID" id="selectedUndergradPID" />
+                                <input type="hidden" name="DegreeName" id="selectedDegreeName" />
+                                <input type="submit" value="Show Student Details" />
                             </form>
                         </tr>
-
+                    </thead>
+                    <tbody>
                         <%
                             Connection conn = null;
                             Statement stmt = null;
@@ -101,121 +106,32 @@
                                 
                                 // Check if any form data was submitted
                                 String action = request.getParameter("action");
-                                if (action != null && action.equals("show_student_details")) {
+                                if (action != null && action.equals("show_undergrad_details")) {
                                     conn.setAutoCommit(false);
                                    
                                     // Retrieve all student attributes given the PID
-                                    PreparedStatement checkStmt = conn.prepareStatement(
+                                    PreparedStatement pstmt = conn.prepareStatement(
                                         "SELECT * FROM students WHERE PID = ?");
                                     
-                                    checkStmt.setString(1, request.getParameter("PID"));
-                                    ResultSet checkRs = checkStmt.executeQuery();
-                                    conn.commit();
-                                    conn.setAutoCommit(true);
-
-                                    try {
-                                        if (checkStmt != null) {
-                                            while (checkRs.next()) {
-                        %>
-                            <tr>
-                                <form action="classes_taken_report.jsp" method="get">
-                                    <input type="hidden" name="action" value="show_classes" />
-                                    <td><input type="text" name="PID" value="<%= checkRs.getString("PID") %>" size="10" /></td>
-                                    <td><input type="text" name="First" value="<%= checkRs.getString("first") %>" size="13" /></td>
-                                    <td><input type="text" name="Middle" value="<%= checkRs.getString("middle") %>" size="11" /></td>
-                                    <td><input type="text" name="Last" value="<%= checkRs.getString("last") %>" size="11" /></td>
-                                    <td><input type="submit" value="Show Classes"></td>
-                                </form>
-                            </tr>
-                                
-                        <%
-                                            }
-                                            checkStmt.close();
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-
-                                if (action != null && action.equals("show_classes")) {
-                                    conn.setAutoCommit(false);
-                                    String sql = 
-                                        "SELECT " +
-                                        "e.section_id, " +
-                                        "cr.course_name, " +
-                                        "cls.class_title, " +
-                                        "cs.instructor, " +
-                                        "cs.enrollment_cap, " +
-                                        "cr.min_unit, " +
-                                        "cr.max_unit, " +
-                                        "cr.grading_type, " +
-                                        "cr.needs_instructor_consent, " +
-                                        "cr.requires_lab_work " +
-                                        "FROM " +
-                                            "enrollment e " +
-                                        "JOIN " + 
-                                            "class_sections cs ON e.section_id = cs.section_id " +
-                                        "JOIN " + 
-                                            "courses cr ON cs.course_name = cr.course_name " +
-                                        "JOIN " +
-                                            "classes cls ON cr.course_name = cls.course_name " +
-                                        "WHERE " +
-                                            "e.student_pid = ? " +
-                                        "GROUP BY " +
-                                            "e.section_id, " +
-                                            "cr.course_name, " +
-                                            "cls.class_title, " +
-                                            "cs.instructor, " +
-                                            "cs.enrollment_cap, " +
-                                            "cr.min_unit, " +
-                                            "cr.max_unit, " +
-                                            "cr.grading_type, " +
-                                            "cr.needs_instructor_consent, " +
-                                            "cr.requires_lab_work";
-
-                                    PreparedStatement pstmt = conn.prepareStatement(sql);
-                                    pstmt.setString(1, request.getParameter("PID"));
+                                    pstmt.setString(1, request.getParameter("UndergradPID"));
                                     rs = pstmt.executeQuery();
                                     conn.commit();
                                     conn.setAutoCommit(true);
-                                }
-                        %>
-                            <table border="1">
-                                <tr>
-                                    <th>SectionID</th>
-                                    <th>CourseName</th>
-                                    <th>ClassTitle</th>
-                                    <th>Instructor</th>
-                                    <th>EnrollmentCap</th>
-                                    <th>MinUnit</th>
-                                    <th>MaxUnit</th>
-                                    <th>GradingType</th>
-                                    <th>NeedsInstructorConsent</th>
-                                    <th>RequiresLabWork</th>
-                                </tr>
-                        <%
 
-                                // Iterate over the result set and generate the table rows
-                                while (rs.next()) {
+                                    while (rs.next()) {
                         %>
                             <tr>
-                                <td><%= rs.getInt("section_id") %></td>
-                                <td><%= rs.getString("course_name") %></td>
-                                <td><%= rs.getString("class_title") %></td>
-                                <td><%= rs.getString("instructor") %></td>
-                                <td><%= rs.getInt("enrollment_cap") %></td>
-                                <td><%= rs.getInt("min_unit") %></td>
-                                <td><%= rs.getInt("max_unit") %></td>
-                                <td><%= rs.getString("grading_type") %></td>
-                                <td><%= rs.getBoolean("needs_instructor_consent") %></td>
-                                <td><%= rs.getBoolean("requires_lab_work") %></td>
+                                <form action="degree_requirement_report_undergrad.jsp" method="get">
+                                    <td><input type="text" name="PID" value="<%= rs.getString("PID") %>" size="10" /></td>
+                                    <td><input type="text" name="First" value="<%= rs.getString("first") %>" size="13" /></td>
+                                    <td><input type="text" name="Middle" value="<%= rs.getString("middle") %>" size="11" /></td>
+                                    <td><input type="text" name="Last" value="<%= rs.getString("last") %>" size="11" /></td>
+                                </form>
                             </tr>
                         <%
+                                    }
+
                                 }
-                        %>
-                            </table>
-                        <%
                             } catch (Exception e) {
                                 e.printStackTrace();
                             } finally {
@@ -235,6 +151,135 @@
                             }
                         %>
                     </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Degree Name</th>
+                            <th>Department</th>
+                            <th>Minimum Total Units</th>
+                        </tr>
+                        <tr>
+                            <form action="degree_requirement_report_undergrad.jsp" method="get">
+                                <input type="hidden" name="action" value="show_degree_requirements" />
+                                <select name="DegreeName" id="DegreeNameSelect" onchange="updateDegreeName()">
+                                    <% 
+                                        Connection conn2 = null;
+                                        Statement stmt2 = null;
+                                        ResultSet rs2 = null;
+                                        try {
+                                            Class.forName("org.postgresql.Driver");
+                                            conn2 = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
+                                            stmt2 = conn2.createStatement();
+                                            
+                                            String action = request.getParameter("action");
+                                            if (action != null && action.equals("show_undergrad_details")) {
+                                                conn2.setAutoCommit(false);
+                                                PreparedStatement pstmt = conn2.prepareStatement("SELECT degree_name FROM degree_requirements WHERE degree_name NOT LIKE 'MSC%' AND degree_name NOT LIKE 'PHD%' GROUP BY degree_name");
+                                                rs2 = pstmt.executeQuery();
+                                                conn2.commit();
+                                                conn2.setAutoCommit(true);
+                                            }
+                                            
+                                            // Iterate over the result set and generate the options
+                                            while (rs2.next()) {
+                                                String degree_name = rs2.getString("degree_name");
+                                                %>
+                                                <option value="<%= degree_name %>"><%= degree_name %></option>
+                                                <%
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        } finally {
+                                            try {
+                                                if (rs2 != null) {
+                                                    rs2.close();
+                                                }
+                                                if (stmt2 != null) {
+                                                    stmt2.close();
+                                                }
+                                                if (conn2 != null) {
+                                                    conn2.close();
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    %>
+                                </select>
+                                <input type="hidden" name="DegreeName" id="selectedDegreeName" />
+                                <input type="submit" value="Show Degree Requirements" />
+                            </form>
+                        </tr>
+                    <% 
+                        Connection conn3 = null;
+                        PreparedStatement pstmt3 = null;
+                        ResultSet rs3 = null;
+                        try {
+                            Class.forName("org.postgresql.Driver");
+                            conn3 = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
+                            
+                            // Check if any form data was submitted
+                            String action = request.getParameter("action");
+                            if (action != null && action.equals("show_degree_requirements")) {
+                                conn3.setAutoCommit(false);
+                               
+                                // Retrieve all student attributes given the PID
+                                String degreeName = request.getParameter("DegreeName");
+                                String sql = "SELECT departments.department_name, departments.total_units_req, degree_requirements.degree_name, category_name, min_units " +
+                                    "FROM departments " +
+                                    "JOIN degree_requirements ON departments.department_name = degree_requirements.department_name " +
+                                    "WHERE degree_requirements.degree_name = ? " +
+                                    "GROUP BY total_units_req, departments.department_name, degree_requirements.degree_name, category_name, min_units ";
+                                pstmt3 = conn3.prepareStatement(sql);
+                                pstmt3.setString(1, request.getParameter("DegreeName"));
+                                rs3 = pstmt3.executeQuery();
+                                conn3.commit();
+                                conn3.setAutoCommit(true);
+                                boolean hasResults = false;
+                                while (rs3.next()) {
+                                    hasResults = true;
+                    %>
+                        <tr>
+                            <form action="degree_requirement_report_undergrad.jsp" method="get">
+                                <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="10" /></td>
+                                <td><input type="text" name="Department" value="<%= rs3.getString("department_name") %>" size="13" /></td>
+                                <td><input type="text" name="Minimum Total Units" value="<%= rs3.getInt("total_units_req") %>" size="11" /></td>
+                            </form>
+                        </tr>
+                    <%
+                                    for (int i = 0; i < 2; i++) {
+                                        %>
+                                        <tr>
+                                            <form action="degree_requirement_report_undergrad.jsp" method="get">
+                                                <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="10" /></td>
+                                                <td><input type="text" name="Category" value="<%= rs3.getString("category_name") %>" size="13" /></td>
+                                                <td><input type="text" name="Minimum Units" value="<%= rs3.getInt("min_units") %>" size="11" /></td>
+                                            </form>
+                                        </tr>
+                                        <%
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            try {
+                                if (rs3 != null) {
+                                    rs3.close();
+                                }
+                                if (pstmt3 != null) {
+                                    pstmt3.close();
+                                }
+                                if (conn3 != null) {
+                                    conn3.close();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    %>
+                    </thead>
                 </table>
             </td>
         </tr>
