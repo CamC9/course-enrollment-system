@@ -155,9 +155,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Degree Name</th>
-                            <th>Department</th>
-                            <th>Minimum Total Units</th>
+                            <th>DegreeName</th>
+                            <th>Category/Department</th>
+                            <th>MinUnits</th>
                         </tr>
                         <tr>
                             <form action="degree_requirement_report_undergrad.jsp" method="get">
@@ -226,40 +226,48 @@
                                
                                 // Retrieve all student attributes given the PID
                                 String degreeName = request.getParameter("DegreeName");
-                                String sql = "SELECT departments.department_name, departments.total_units_req, degree_requirements.degree_name, category_name, min_units " +
-                                    "FROM departments " +
-                                    "JOIN degree_requirements ON departments.department_name = degree_requirements.department_name " +
-                                    "WHERE degree_requirements.degree_name = ? " +
-                                    "GROUP BY total_units_req, departments.department_name, degree_requirements.degree_name, category_name, min_units ";
+                                String sql = "SELECT departments.department_name, degree_requirements.degree_name, category_name, SUM(min_units) AS total_min_units " +
+             "FROM departments " +
+             "JOIN degree_requirements ON departments.department_name = degree_requirements.department_name " +
+             "WHERE degree_requirements.degree_name = ? " +
+             "GROUP BY departments.department_name, degree_requirements.degree_name, category_name";
                                 pstmt3 = conn3.prepareStatement(sql);
                                 pstmt3.setString(1, request.getParameter("DegreeName"));
                                 rs3 = pstmt3.executeQuery();
                                 conn3.commit();
                                 conn3.setAutoCommit(true);
                                 boolean hasResults = false;
+                                String firstDegreeName = "";
+                                String firstDepartmentName = "";
+                                int totalMinUnits = 0;
                                 while (rs3.next()) {
-                                    hasResults = true;
-                    %>
-                        <tr>
-                            <form action="degree_requirement_report_undergrad.jsp" method="get">
-                                <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="10" /></td>
-                                <td><input type="text" name="Department" value="<%= rs3.getString("department_name") %>" size="13" /></td>
-                                <td><input type="text" name="Minimum Total Units" value="<%= rs3.getInt("total_units_req") %>" size="11" /></td>
-                            </form>
-                        </tr>
-                    <%
-                                    for (int i = 0; i < 2; i++) {
-                                        %>
-                                        <tr>
-                                            <form action="degree_requirement_report_undergrad.jsp" method="get">
-                                                <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="10" /></td>
-                                                <td><input type="text" name="Category" value="<%= rs3.getString("category_name") %>" size="13" /></td>
-                                                <td><input type="text" name="Minimum Units" value="<%= rs3.getInt("min_units") %>" size="11" /></td>
-                                            </form>
-                                        </tr>
-                                        <%
+                                    if (!hasResults) {
+                                        hasResults = true;
+                                        firstDegreeName = rs3.getString("degree_name");
+                                        firstDepartmentName = rs3.getString("department_name");
                                     }
+                    %>
+                                    <tr>
+                                        <form action="degree_requirement_report_undergrad.jsp" method="get">
+                                            <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="15" /></td>
+                                            <td><input type="text" name="Category" value="<%= rs3.getString("category_name") %>" size="17" /></td>
+                                            <td><input type="text" name="MinUnits" value="<%= rs3.getInt("total_min_units") %>" size="7" /></td>
+                                        </form>
+                                    </tr>
+                    <%
+                                    totalMinUnits += rs3.getInt("total_min_units");
                                 }
+                                // Add new row that displays the sum of the min_units
+                    %>
+                                <tr>
+                                    <form action="degree_requirement_report_undergrad.jsp" method="get">
+                                        <td><input type="text" name="DegreeName" value="<%= firstDegreeName %>" size="15" /></td>
+                                        <td><input type="text" name="Category" value="<%= firstDepartmentName %>" size="17" /></td>
+                                        <td><input type="text" name="MinUnits" value="<%= totalMinUnits %>" size="7" /></td>
+                                    </form>
+                                </tr>
+                    <%
+                                
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

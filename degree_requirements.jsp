@@ -19,6 +19,7 @@
                             <th>department_name</th>
                             <th>category_name</th>
                             <th>concentration_name</th>
+                            <th>min_units</th>
                             <th>id</th>
                         </tr>
                         <tr>
@@ -28,6 +29,7 @@
                                 <input type="text" name="department_name" size="18" placeholder="Department Name" />
                                 <input type="text" name="category_name" size="17" placeholder="Category Name" />
                                 <input type="text" name="concentration_name" size="19" placeholder="Concentration Name" />
+                                <input type="text" name="min_units" size="7" placeholder="Min Units" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -51,7 +53,31 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the degree_requirements table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO degree_requirements VALUES (?, ?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO degree_requirements VALUES (?, ?, ?, ?, ?)");
+                                    String degree_name = request.getParameter("degree_name");
+                                    String department_name = request.getParameter("department_name");
+                                    String category_name = request.getParameter("category_name");
+                                    String concentration_name = request.getParameter("concentration_name");
+                                    Integer min_units = Integer.parseInt(request.getParameter("min_units"));
+                                    pstmt.setString(1, degree_name);
+                                    pstmt.setString(2, department_name);
+                                    if (concentration_name == null || concentration_name.trim().isEmpty()) {
+                                        pstmt.setString(3, category_name); 
+                                        pstmt.setString(4, null);
+                                    } else {
+                                        pstmt.setString(3, null);
+                                        pstmt.setString(4, concentration_name);
+                                    }
+                                    pstmt.setInt(5, min_units);
+                                    pstmt.executeUpdate();
+                                    conn.commit();
+                                    conn.setAutoCommit(true);
+                                    response.sendRedirect("degree_requirements.jsp");
+                                }
+
+                                if (action != null && action.equals("update")) {
+                                    conn.setAutoCommit(false);
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE degree_requirements SET degree_name = ?, department_name = ?, category_name = ?, concentration_name = ?, min_units = ? WHERE id = ?"); 
                                     String degree_name = request.getParameter("degree_name");
                                     String department_name = request.getParameter("department_name");
                                     String category_name = request.getParameter("category_name");
@@ -65,29 +91,8 @@
                                         pstmt.setString(3, null);
                                         pstmt.setString(4, concentration_name);
                                     }
-                                    pstmt.executeUpdate();
-                                    conn.commit();
-                                    conn.setAutoCommit(true);
-                                    response.sendRedirect("degree_requirements.jsp");
-                                }
-
-                                if (action != null && action.equals("update")) {
-                                    conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE degree_requirements SET degree_name = ?, department_name = ?, category_name = ?, concentration_name = ? WHERE id = ?"); 
-                                    String degree_name = request.getParameter("degree_name");
-                                    String department_name = request.getParameter("department_name");
-                                    String category_name = request.getParameter("category_name");
-                                    String concentration_name = request.getParameter("concentration_name");
-                                    pstmt.setString(1, degree_name);
-                                    pstmt.setString(2, department_name);
-                                    if (concentration_name == null || concentration_name.trim().isEmpty()) {
-                                        pstmt.setString(3, category_name); 
-                                        pstmt.setString(4, null);
-                                    } else {
-                                        pstmt.setString(3, null);
-                                        pstmt.setString(4, concentration_name);
-                                    } 
-                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
+                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("min_units")));
+                                    pstmt.setInt(6, Integer.parseInt(request.getParameter("id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -114,6 +119,7 @@
                                     <td><input type="text" name="department_name" value="<%= rs.getString("department_name") %>" size="17" /></td>
                                     <td><input type="text" name="category_name" value="<%= rs.getString("category_name") %>" size="16" /></td>
                                     <td><input type="text" name="concentration_name" value="<%= rs.getString("concentration_name") %>" size="19" /></td>
+                                    <td><input type="text" name="min_units" value="<%= rs.getInt("min_units") %>" size="7" /></td>
                                     <td><input type="text" name="id" value="<%= rs.getInt("id") %>" size="7" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
