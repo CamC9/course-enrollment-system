@@ -72,7 +72,7 @@
                                     String minor = request.getParameter("minor");
                                     String department = request.getParameter("department");
                                     pstmt.setString(1, request.getParameter("PID"));
-                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("SSN")));
+                                    pstmt.setString(2, request.getParameter("SSN"));
                                     pstmt.setString(3, request.getParameter("first"));
                                     if (middle == null || middle.trim().isEmpty()) {
                                         pstmt.setString(4, null);
@@ -112,7 +112,7 @@
                                     String str_major = request.getParameter("major");
                                     String str_minor = request.getParameter("minor");
                                     String str_department = request.getParameter("department");
-                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("SSN")));
+                                    pstmt.setString(1, request.getParameter("SSN"));
                                     pstmt.setString(2, request.getParameter("first"));
                                     pstmt.setString(3, str_middle);
                                     pstmt.setString(4, request.getParameter("last"));
@@ -147,7 +147,7 @@
                                 <form action="students.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
                                     <td><input value="<%= rs.getString("PID") %>" name="PID" size="5"></td>
-                                    <td><input value="<%= rs.getInt("SSN") %>" name="SSN" size="11"></td>
+                                    <td><input value="<%= rs.getString("SSN") %>" name="SSN" size="11"></td>
                                     <td><input value="<%= rs.getString("first") %>" name="first" size="10"></td>
                                     <td><input value="<%= rs.getString("middle") %>" name="middle" size="8"></td>
                                     <td><input value="<%= rs.getString("last") %>" name="last" size="10"></td>
