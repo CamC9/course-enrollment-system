@@ -18,6 +18,8 @@
                             <th>DepartmentName</th>
                             <th>TotalUnitsReq</th>
                             <th>LowerDivUnitsReq</th>
+                            <th>UpperDivUnitsReq</th>
+                            <th>TechnicalElectiveUnitsReq</th>
                         </tr>
                         <tr>
                             <form action="departments.jsp" method="get">
@@ -25,6 +27,8 @@
                                 <input type="text" name="department_name" size="21" placeholder="Department Name" />
                                 <input type="text" name="total_units_req" size="15" placeholder="Total Units Req" />
                                 <input type="text" name="lower_div_units_req" size="19" placeholder="Lower Div Units Req" />
+                                <input type="text" name="upper_div_units_req" size="19" placeholder="Upper Div Units Req" />
+                                <input type="text" name="technical_elective_units_req" size="25" placeholder="Technical Elective Units Req" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -48,10 +52,12 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the departments table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO departments VALUES (?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO departments VALUES (?, ?, ?, ?, ?)");
                                     pstmt.setString(1, request.getParameter("department_name"));
                                     pstmt.setInt(2, Integer.parseInt(request.getParameter("total_units_req")));
                                     pstmt.setInt(3, Integer.parseInt(request.getParameter("lower_div_units_req")));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("upper_div_units_req")));
+                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("technical_elective_units_req")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -60,10 +66,12 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE departments SET total_units_req = ?, lower_div_units_req = ? WHERE department_name = ?");
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE departments SET total_units_req = ?, lower_div_units_req = ?, upper_div_units_req = ?, technical_elective_units_req = ? WHERE department_name = ?");
                                     pstmt.setInt(1, Integer.parseInt(request.getParameter("total_units_req")));
                                     pstmt.setInt(2, Integer.parseInt(request.getParameter("lower_div_units_req")));
-                                    pstmt.setString(3, request.getParameter("department_name"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("upper_div_units_req")));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("technical_elective_units_req")));
+                                    pstmt.setString(5, request.getParameter("department_name"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -89,6 +97,8 @@
                                     <td><input value="<%= rs.getString("department_name") %>" name="department_name" size="20"></td>
                                     <td><input value="<%= rs.getInt("total_units_req") %>" name="total_units_req" size="14"></td>
                                     <td><input value="<%= rs.getInt("lower_div_units_req") %>" name="lower_div_units_req" size="18"></td>
+                                    <td><input value="<%= rs.getInt("upper_div_units_req") %>" name="upper_div_units_req" size="18"></td>
+                                    <td><input value="<%= rs.getInt("technical_elective_units_req") %>" name="technical_elective_units_req" size="24"></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>

@@ -19,7 +19,7 @@
                             <th>class_title</th>
                             <th>quarter</th>
                             <th>year</th>
-                            <th>offering_id</th>
+                            <th>class_id</th>
                         </tr>
                         <tr>
                             <form action="classes.jsp" method="get">
@@ -28,7 +28,7 @@
                                 <input type="text" name="class_title" size="41" placeholder="Class Title" />
                                 <input type="text" name="quarter" size="11" placeholder="Quarter" />
                                 <input type="text" name="year" size="11" placeholder="Year" />
-                                <input type="text" name="offering_id" size="10" placeholder="Offering ID" />
+                                <input type="text" name="offering_id" size="10" placeholder="Class ID" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>

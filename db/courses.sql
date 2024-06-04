@@ -6,33 +6,31 @@ CREATE TABLE courses (
     min_unit INT NOT NULL,
     max_unit INT NOT NULL,
     grading_type VARCHAR(255) NOT NULL,
+    cateogry VARCHAR(255),
     FOREIGN KEY (department) REFERENCES departments(department_name)
 );
 
--- Valid entry
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type)
+    VALUES ('CSE132A', 'Computer Science', TRUE, TRUE, 4, 4, 'letter grade');
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_132B', 'Computer Science', TRUE, TRUE, 4, 4, 'Letter');
-
--- Second valid entry
+    VALUES ('CSE291', 'Computer Science', FALSE, FALSE, 4, 4, 'letter grade or S/U');
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_156', 'Computer Science', TRUE, TRUE, 4, 4, 'Both');
-
--- Third valid entry
+    VALUES ('CSE101', 'Computer Science', TRUE, TRUE, 4, 4, 'letter grade');
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('COGS_112', 'Cognitive Science', FALSE, FALSE, 4, 4, 'S/U');
-
--- Fourth valid entry
+    VALUES ('CSE132B', 'Computer Science', TRUE, TRUE, 4, 4, 'letter grade');
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_105', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');
-
--- Fifth valid entry
+    VALUES ('CSE232A', 'Computer Science', TRUE, FALSE, 4, 4, 'letter grade');
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_132A', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');
-
--- Sixth valid entry
+    VALUES ('MATH101', 'Mathematics', FALSE, FALSE, 4, 4, 'letter grade');
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_132', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');
-
--- Seventh valid entry
+    VALUES ('PHYS101', 'Physics', TRUE, TRUE, 4, 4, 'letter grade');
 INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
-    VALUES ('CSE_197', 'Computer Science', FALSE, FALSE, 4, 4, 'Letter');
+    VALUES ('BIO101', 'Biology', TRUE, TRUE, 4, 4, 'letter grade');
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
+    VALUES ('CHEM101', 'Chemistry', TRUE, TRUE, 4, 4, 'letter grade');
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
+    VALUES ('STAT101', 'Statistics', FALSE, FALSE, 4, 4, 'letter grade');
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
+    VALUES ('CSE132C', 'Computer Science', FALSE, FALSE, 4, 4, 'letter grade');
+INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) 
+    VALUES ('CSE291B', 'Computer Science', FALSE, FALSE, 4, 4, 'letter grade');
