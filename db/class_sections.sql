@@ -3,32 +3,35 @@ CREATE TABLE class_sections (
     class_offering_id INT NOT NULL,
     instructor VARCHAR(255) NOT NULL,
     enrollment_cap INT NOT NULL,
-    section_id int PRIMARY KEY,
+    section_id VARCHAR(255) PRIMARY KEY,
     FOREIGN KEY (course_name) REFERENCES courses(course_name),
     FOREIGN KEY (class_offering_id) REFERENCES classes(offering_id),
     FOREIGN KEY (instructor) REFERENCES faculty(name)
 );
 
--- Valid entry
-INSERT INTO class_sections (course_name, class_offering_id, instructor, enrollment_cap, section_id)
-    VALUES ('CSE_132B', 1, 'John Doe', 25, 1);
-
--- Future class
-INSERT INTO class_sections (course_name, class_offering_id, instructor, enrollment_cap, section_id)
-    VALUES ('CSE_156', 5, 'John Doe', 6, 2);
-
--- Valid entry
-INSERT INTO class_sections (course_name, class_offering_id, instructor, enrollment_cap, section_id)
-    VALUES ('COGS_112', 2, 'Jane Doe', 20, 3);
-
--- Valid entry
-INSERT INTO class_sections (course_name, class_offering_id, instructor, enrollment_cap, section_id)
-    VALUES ('CSE_156', 10, 'Jane Doe', 4, 10);
-
--- Valid entry
-INSERT INTO class_sections (course_name, class_offering_id, instructor, enrollment_cap, section_id)
-    VALUES ('CSE_156', 11, 'Jane Doe', 2, 11);
-
--- Valid entry
-INSERT INTO class_sections (course_name, class_offering_id, instructor, enrollment_cap, section_id)
-    VALUES ('CSE_132B', 12, 'Jane Doe', 25, 12);
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S1', 1, 'Dr. Alan Turing', 25, 'CSE132A');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S2', 2, 'Dr. Ada Lovelace', 25, 'CSE291');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S3', 3, 'Dr. Andrew Ng', 25, 'CSE101');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S4', 4, 'Dr. Alan Turing', 25, 'CSE132B');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S5', 5, 'Dr. Geoffrey Hinton', 25, 'CSE232A');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S6', 6, 'Dr. Carl Gauss', 25, 'MATH101');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S7', 7, 'Dr. Albert Einstein', 25, 'PHYS101');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S8', 8, 'Dr. James Watson', 25, 'BIO101');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S9', 9, 'Dr. Marie Curie', 25, 'CHEM101');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S10', 10, 'Dr. John Tukey', 25, 'STAT101');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S11', 11, 'Dr. Alan Turing', 25, 'CSE132A');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S12', 12, 'Dr. Ian Goodfellow', 25, 'CSE291B');
+INSERT INTO class_sections (section_id, class_offering_id, instructor, enrollment_cap, course_name) 
+    VALUES ('S13', 13, 'Dr. Alin D', 25, 'CSE132C');

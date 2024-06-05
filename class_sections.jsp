@@ -15,20 +15,20 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>course_name</th>
+                            <th>section_id</th>
                             <th>class_offering_id</th>
                             <th>instructor</th>
                             <th>enrollment_cap</th>
-                            <th>section_id</th>
+                            <th>course_name</th>
                         </tr>
                         <tr>
                             <form action="class_sections.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="course_name" size="13" placeholder="Course Name" />
-                                <input type="text" name="class_offering_id" size="17" placeholder="Class Offering ID" />
-                                <input type="text" name="instructor" size="12" placeholder="Instructor" />
-                                <input type="text" name="enrollment_cap" size="15" placeholder="Enrollment Cap" />
                                 <input type="text" name="section_id" size="9" placeholder="Section ID" />
+                                <input type="text" name="class_offering_id" size="17" placeholder="Class Offering ID" />
+                                <input type="text" name="instructor" size="18" placeholder="Instructor" />
+                                <input type="text" name="enrollment_cap" size="15" placeholder="Enrollment Cap" />
+                                <input type="text" name="course_name" size="13" placeholder="Course Name" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -57,7 +57,7 @@
                                     pstmt.setInt(2, Integer.parseInt(request.getParameter("class_offering_id")));
                                     pstmt.setString(3, request.getParameter("instructor"));
                                     pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_cap")));
-                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("section_id")));
+                                    pstmt.setString(5, request.getParameter("section_id"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -71,7 +71,7 @@
                                     pstmt.setInt(2, Integer.parseInt(request.getParameter("class_offering_id")));
                                     pstmt.setString(3, request.getParameter("instructor"));
                                     pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_cap")));
-                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("section_id")));
+                                    pstmt.setString(5, request.getParameter("section_id"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -81,7 +81,7 @@
                                 if (action != null && action.equals("delete")) {
                                     conn.setAutoCommit(false);
                                     PreparedStatement pstmt = conn.prepareStatement("DELETE FROM class_sections WHERE section_id = ?");
-                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("section_id")));
+                                    pstmt.setString(1, request.getParameter("section_id"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -94,17 +94,17 @@
                             <tr>
                                 <form action="class_sections.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="12" /></td>
+                                    <td><input type="text" name="section_id" value="<%= rs.getString("section_id") %>" size="8" /></td>
                                     <td><input type="text" name="class_offering_id" value="<%= rs.getInt("class_offering_id") %>" size="16" /></td>
-                                    <td><input type="text" name="instructor" value="<%= rs.getString("instructor") %>" size="11" /></td>
+                                    <td><input type="text" name="instructor" value="<%= rs.getString("instructor") %>" size="17" /></td>
                                     <td><input type="text" name="enrollment_cap" value="<%= rs.getInt("enrollment_cap") %>" size="14" /></td>
-                                    <td><input type="text" name="section_id" value="<%= rs.getInt("section_id") %>" size="8" /></td>
+                                    <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="12" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>
                                     <form action="class_sections.jsp" method="get">
                                         <input type="hidden" name="action" value="delete" />
-                                        <input type="hidden" name="section_id" value="<%= rs.getInt("section_id") %>" />
+                                        <input type="hidden" name="section_id" value="<%= rs.getString("section_id") %>" />
                                         <input type="submit" value="Delete" />
                                     </form>
                                 </td>
