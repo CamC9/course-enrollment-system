@@ -3,7 +3,6 @@ CREATE TABLE degree_requirements (
     department_name VARCHAR(255) NOT NULL,
     category_name VARCHAR(255) NOT NULL,
     min_units INT NOT NULL,
-    min_gpa DECIMAL(3, 2) DEFAULT 0.00,
     id SERIAL PRIMARY KEY,
     FOREIGN KEY (department_name) REFERENCES departments(department_name)
 );
@@ -14,10 +13,10 @@ INSERT INTO degree_requirements (degree_name, department_name, category_name, mi
     VALUES ('BSC in Computer Science', 'Computer Science', 'upper division', 40);
 INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units)
     VALUES ('BSC in Computer Science', 'Computer Science', 'technical elective', 24);
-INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units, min_gpa)
-    VALUES ('MS in Computer Science', 'Computer Science', 'upper division', 24, 3.00);
-INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units, min_gpa)
-    VALUES ('MS in Computer Science', 'Computer Science', 'technical elective', 20, 3.00);
+INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units)
+    VALUES ('MS in Computer Science', 'Computer Science', 'upper division', 24);
+INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units)
+    VALUES ('MS in Computer Science', 'Computer Science', 'technical elective', 20);
 INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units)
     VALUES ('BSC in Mathematics', 'Mathematics', 'lower division', 60);
 INSERT INTO degree_requirements (degree_name, department_name, category_name, min_units)

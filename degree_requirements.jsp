@@ -24,10 +24,10 @@
                         <tr>
                             <form action="degree_requirements.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="degree_name" size="16" placeholder="Degree Name" />
+                                <input type="text" name="degree_name" size="25" placeholder="Degree Name" />
                                 <input type="text" name="department_name" size="18" placeholder="Department Name" />
                                 <input type="text" name="category_name" size="17" placeholder="Category Name" />
-                                <input type="text" name="min_units" size="7" placeholder="Min Units" />
+                                <input type="text" name="min_units" size="10" placeholder="Min Units" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -99,10 +99,10 @@
                             <tr>
                                 <form action="degree_requirements.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input type="text" name="degree_name" value="<%= rs.getString("degree_name") %>" size="15" /></td>
+                                    <td><input type="text" name="degree_name" value="<%= rs.getString("degree_name") %>" size="24" /></td>
                                     <td><input type="text" name="department_name" value="<%= rs.getString("department_name") %>" size="17" /></td>
                                     <td><input type="text" name="category_name" value="<%= rs.getString("category_name") %>" size="16" /></td>
-                                    <td><input type="text" name="min_units" value="<%= rs.getInt("min_units") %>" size="7" /></td>
+                                    <td><input type="text" name="min_units" value="<%= rs.getInt("min_units") %>" size="9" /></td>
                                     <td><input type="text" name="id" value="<%= rs.getInt("id") %>" size="7" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
