@@ -6,7 +6,6 @@ CREATE TABLE courses (
     min_unit INT NOT NULL,
     max_unit INT NOT NULL,
     grading_type VARCHAR(255) NOT NULL,
-    cateogry VARCHAR(255),
     FOREIGN KEY (department) REFERENCES departments(department_name)
 );
 
