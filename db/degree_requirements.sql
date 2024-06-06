@@ -1,8 +1,7 @@
 CREATE TABLE degree_requirements (
     degree_name VARCHAR(255) NOT NULL,
     department_name VARCHAR(255) NOT NULL,
-    category_name VARCHAR(255),
-    concentration_name VARCHAR(255),
+    category_name VARCHAR(255) NOT NULL,
     min_units INT NOT NULL,
     min_gpa DECIMAL(3, 2) DEFAULT 0.00,
     id SERIAL PRIMARY KEY,
