@@ -15,7 +15,6 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>degree_name</th>
                             <th>category_name</th>
                             <th>course_name</th>
                             <th>id</th>
@@ -23,7 +22,6 @@
                         <tr>
                             <form action="category_consists_of.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="degree_name" size="17" placeholder="Degree Name" />
                                 <input type="text" name="category_name" size="18" placeholder="Category Name" />
                                 <input type="text" name="course_name" size="18" placeholder="Course Name" />
                                 <input type="submit" value="Add" />
@@ -49,10 +47,9 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the category_consists_of table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO category_consists_of VALUES (?, ?, ?)");
-                                    pstmt.setString(1, request.getParameter("degree_name"));
-                                    pstmt.setString(2, request.getParameter("category_name"));
-                                    pstmt.setString(3, request.getParameter("course_name"));
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO category_consists_of VALUES (?, ?)");
+                                    pstmt.setString(1, request.getParameter("category_name"));
+                                    pstmt.setString(2, request.getParameter("course_name"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -61,11 +58,10 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE category_consists_of SET degree_name = ?, category_name = ?, course_name = ? WHERE id = ?");
-                                    pstmt.setString(1, request.getParameter("degree_name"));
-                                    pstmt.setString(2, request.getParameter("category_name"));
-                                    pstmt.setString(3, request.getParameter("course_name"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("id")));
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE category_consists_of SET category_name = ?, course_name = ? WHERE id = ?");
+                                    pstmt.setString(1, request.getParameter("category_name"));
+                                    pstmt.setString(2, request.getParameter("course_name"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -88,7 +84,6 @@
                             <tr>
                                 <form action="category_consists_of.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input value="<%= rs.getString("degree_name") %>" name="degree_name" size="16"></td>
                                     <td><input value="<%= rs.getString("category_name") %>" name="category_name" size="17"></td>
                                     <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="17"></td>
                                     <td><input value="<%= rs.getInt("id") %>" name="id" size="6"></td>
