@@ -6,10 +6,9 @@ CREATE TABLE prerequisites (
     FOREIGN KEY (prerequisite_name) REFERENCES courses(course_name)
 );
 
--- Valid Course 
 INSERT INTO prerequisites (course_name, prerequisite_name)
-    VALUES ('CSE_132B', 'CSE_105');
+    VALUES ('CSE132A', 'CSE101');
 INSERT INTO prerequisites (course_name, prerequisite_name)
-    VALUES ('CSE_105', 'CSE_105');
+    VALUES ('CSE132B', 'CSE132A');
 INSERT INTO prerequisites (course_name, prerequisite_name)
-    VALUES ('CSE_132B', 'CSE_132A');
+    VALUES ('CSE232A', 'CSE132A');
