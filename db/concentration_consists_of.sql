@@ -3,8 +3,7 @@ CREATE TABLE concentration_consists_of (
     concentration_name VARCHAR(255) NOT NULL,
     course_id int NOT NULL,
     min_units_concentration INT NOT NULL,
-    id SERIAL PRIMARY KEY,
-    FOREIGN KEY (course_name) REFERENCES courses(course_name)
+    id SERIAL PRIMARY KEY
 );
 
 INSERT INTO concentration_consists_of (degree_name, concentration_name, course_id, min_units_concentration)

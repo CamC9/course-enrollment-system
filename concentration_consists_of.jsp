@@ -17,15 +17,17 @@
                         <tr>
                             <th>degree_name</th>
                             <th>concentration_name</th>
-                            <th>course_name</th>
+                            <th>course_id</th>
+                            <th>min_units_concentration</th>
                             <th>id</th>
                         </tr>
                         <tr>
                             <form action="concentration_consists_of.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
-                                <input type="text" name="degree_name" size="17" placeholder="Degree Name" />
+                                <input type="text" name="degree_name" size="26" placeholder="Degree Name" />
                                 <input type="text" name="concentration_name" size="20" placeholder="Concentration Name" />
-                                <input type="text" name="course_name" size="18" placeholder="Course Name" />
+                                <input type="text" name="course_id" size="18" placeholder="Course ID" />
+                                <input type="text" name="min_units_concentration" size="25" placeholder="Min Units" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -49,10 +51,11 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the concentration_consists_of table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO concentration_consists_of VALUES (?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO concentration_consists_of VALUES (?, ?, ?, ?)");
                                     pstmt.setString(1, request.getParameter("degree_name"));
                                     pstmt.setString(2, request.getParameter("concentration_name"));
-                                    pstmt.setString(3, request.getParameter("course_name"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("course_id")));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("min_units_concentration")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -61,11 +64,12 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE concentration_consists_of SET degree_name = ?, concentration_name = ?, course_name = ? WHERE id = ?");
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE concentration_consists_of SET degree_name = ?, concentration_name = ?, course_id= ?, min_units_concentration = ? WHERE id = ?");
                                     pstmt.setString(1, request.getParameter("degree_name"));
                                     pstmt.setString(2, request.getParameter("concentration_name"));
-                                    pstmt.setString(3, request.getParameter("course_name"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("id")));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("course_id")));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("min_units_concentration")));
+                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -88,9 +92,10 @@
                             <tr>
                                 <form action="concentration_consists_of.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
-                                    <td><input value="<%= rs.getString("degree_name") %>" name="degree_name" size="16"></td>
+                                    <td><input value="<%= rs.getString("degree_name") %>" name="degree_name" size="25"></td>
                                     <td><input value="<%= rs.getString("concentration_name") %>" name="concentration_name" size="19"></td>
-                                    <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="17"></td>
+                                    <td><input value="<%= rs.getInt("course_id") %>" name="course_id" size="17"></td>
+                                    <td><input value="<%= rs.getInt("min_units_concentration") %>" name="min_units_concentration" size="24"></td>
                                     <td><input value="<%= rs.getInt("id") %>" name="id" size="6"></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
