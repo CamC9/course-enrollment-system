@@ -7,9 +7,9 @@ CREATE TABLE concentration_consists_of (
     id SERIAL PRIMARY KEY
 );
 
-INSERT INTO concentration_consists_of (degree_name, concentration_name, course_id, min_units_concentration)
+INSERT INTO concentration_consists_of (degree_name, concentration_name, course_id, min_units_concentration, min_gpa)
     VALUES ('MS in Computer Science', 'Machine Learning', 2, 12, 3.00);
-INSERT INTO concentration_consists_of (degree_name, concentration_name, course_id, min_units_concentration)
+INSERT INTO concentration_consists_of (degree_name, concentration_name, course_id, min_units_concentration, min_gpa)
     VALUES ('MS in Computer Science', 'Machine Learning', 5, 12, 3.00);
-INSERT INTO concentration_consists_of (degree_name, concentration_name, course_id, min_units_concentration)
+INSERT INTO concentration_consists_of (degree_name, concentration_name, course_id, min_units_concentration, min_gpa)
     VALUES ('MS in Computer Science', 'Machine Learning', 12, 12, 3.00);

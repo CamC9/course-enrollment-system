@@ -8,7 +8,7 @@
     <table>
         <tr>
             <td>
-                <%@ page import="java.sql.*" %>
+                <%@ page import="java.sql.*, java.math.BigDecimal" %>
                 <jsp:include page="menu.html" />
             </td>
             <td>
@@ -19,6 +19,7 @@
                             <th>concentration_name</th>
                             <th>course_id</th>
                             <th>min_units_concentration</th>
+                            <th>min_gpa</th>
                             <th>id</th>
                         </tr>
                         <tr>
@@ -28,6 +29,7 @@
                                 <input type="text" name="concentration_name" size="20" placeholder="Concentration Name" />
                                 <input type="text" name="course_id" size="18" placeholder="Course ID" />
                                 <input type="text" name="min_units_concentration" size="25" placeholder="Min Units" />
+                                <input type="text" name="min_gpa" size="7" placeholder="Min GPA" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -51,11 +53,12 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the concentration_consists_of table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO concentration_consists_of VALUES (?, ?, ?, ?)");
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO concentration_consists_of VALUES (?, ?, ?, ?, ?)");
                                     pstmt.setString(1, request.getParameter("degree_name"));
                                     pstmt.setString(2, request.getParameter("concentration_name"));
                                     pstmt.setInt(3, Integer.parseInt(request.getParameter("course_id")));
                                     pstmt.setInt(4, Integer.parseInt(request.getParameter("min_units_concentration")));
+                                    pstmt.setBigDecimal(5, new BigDecimal(request.getParameter("min_gpa")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -64,12 +67,13 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE concentration_consists_of SET degree_name = ?, concentration_name = ?, course_id= ?, min_units_concentration = ? WHERE id = ?");
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE concentration_consists_of SET degree_name = ?, concentration_name = ?, course_id= ?, min_units_concentration = ?, min_gpa = ? WHERE id = ?");
                                     pstmt.setString(1, request.getParameter("degree_name"));
                                     pstmt.setString(2, request.getParameter("concentration_name"));
                                     pstmt.setInt(3, Integer.parseInt(request.getParameter("course_id")));
                                     pstmt.setInt(4, Integer.parseInt(request.getParameter("min_units_concentration")));
-                                    pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
+                                    pstmt.setBigDecimal(5, new BigDecimal(request.getParameter("min_gpa")));
+                                    pstmt.setInt(6, Integer.parseInt(request.getParameter("id")));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -96,6 +100,7 @@
                                     <td><input value="<%= rs.getString("concentration_name") %>" name="concentration_name" size="19"></td>
                                     <td><input value="<%= rs.getInt("course_id") %>" name="course_id" size="17"></td>
                                     <td><input value="<%= rs.getInt("min_units_concentration") %>" name="min_units_concentration" size="24"></td>
+                                    <td><input value="<%= rs.getBigDecimal("min_gpa") %>" name="min_gpa" size="7"></td>
                                     <td><input value="<%= rs.getInt("id") %>" name="id" size="6"></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
