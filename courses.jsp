@@ -15,24 +15,26 @@
                 <table border="1">
                     <thead>
                         <tr>
+                            <th>course_id</th>
                             <th>course_name</th>
                             <th>department</th>
-                            <th>needs_instructor_consent</th>
-                            <th>requires_lab_work</th>
                             <th>min_unit</th>
                             <th>max_unit</th>
                             <th>grading_type</th>
+                            <th>requires_lab_work</th>
+                            <th>needs_instructor_consent</th>
                         </tr>
                         <tr>
                             <form action="courses.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
+                                <input type="text" name="course_id" size="12" placeholder="Course ID" />
                                 <input type="text" name="course_name" size="13" placeholder="Course Name" />
                                 <input type="text" name="department" size="21" placeholder="Department" />
-                                <input type="text" name="needs_instructor_consent" size="26" placeholder="Needs Instructor Consent" />
-                                <input type="text" name="requires_lab_work" size="21" placeholder="Requires Lab Work" />
                                 <input type="text" name="min_unit" size="11" placeholder="Min Units" />
                                 <input type="text" name="max_unit" size="10"placeholder="Max Units" />
                                 <input type="text" name="grading_type" size="16" placeholder="Grading Type" />
+                                <input type="text" name="requires_lab_work" size="21" placeholder="Requires Lab Work" />
+                                <input type="text" name="needs_instructor_consent" size="26" placeholder="Needs Instructor Consent" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -56,21 +58,23 @@
                                     // Create the prepared Statement
                                     String course_name = request.getParameter("course_name");
                                     String department = request.getParameter("department");
+                                    Integer course_id = Integer.parseInt(request.getParameter("course_id"));
                                     Boolean needs_instructor_consent = Boolean.parseBoolean(request.getParameter("needs_instructor_consent"));
                                     Boolean requires_lab_work = Boolean.parseBoolean(request.getParameter("requires_lab_work"));
                                     Integer min_unit = Integer.parseInt(request.getParameter("min_unit"));
                                     Integer max_unit = Integer.parseInt(request.getParameter("max_unit"));
                                     String grading_type = request.getParameter("grading_type");
                                      
-                                    String sql = "INSERT INTO courses (course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                                    String sql = "INSERT INTO courses (course_id, course_name, department, needs_instructor_consent, requires_lab_work, min_unit, max_unit, grading_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                                     PreparedStatement ps = conn.prepareStatement(sql);
-                                    ps.setString(1, course_name);
-                                    ps.setString(2, department);
-                                    ps.setBoolean(3, needs_instructor_consent);
-                                    ps.setBoolean(4, requires_lab_work);
-                                    ps.setInt(5, min_unit);
-                                    ps.setInt(6, max_unit);
-                                    ps.setString(7, grading_type);
+                                    ps.setInt(1, course_id);
+                                    ps.setString(2, course_name);
+                                    ps.setString(3, department);
+                                    ps.setBoolean(4, needs_instructor_consent);
+                                    ps.setBoolean(5, requires_lab_work);
+                                    ps.setInt(6, min_unit);
+                                    ps.setInt(7, max_unit);
+                                    ps.setString(8, grading_type);
                                      
                                     ps.executeUpdate();
                                     conn.commit();
@@ -80,6 +84,7 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
+                                    Integer course_id = Integer.parseInt(request.getParameter("course_id"));
                                     String course_name = request.getParameter("course_name");
                                     String department = request.getParameter("department");
                                     Boolean needs_instructor_consent = Boolean.parseBoolean(request.getParameter("needs_instructor_consent"));
@@ -87,15 +92,16 @@
                                     Integer min_unit = Integer.parseInt(request.getParameter("min_unit"));
                                     Integer max_unit = Integer.parseInt(request.getParameter("max_unit"));
                                     String grading_type = request.getParameter("grading_type");
-                                    String sql = "UPDATE courses SET department = ?, needs_instructor_consent = ?, requires_lab_work = ?, min_unit = ?, max_unit = ?, grading_type = ? WHERE course_name = ?";
+                                    String sql = "UPDATE courses SET course_id = ?, department = ?, needs_instructor_consent = ?, requires_lab_work = ?, min_unit = ?, max_unit = ?, grading_type = ? WHERE course_name = ?";
                                     PreparedStatement ps = conn.prepareStatement(sql);
-                                    ps.setString(1, department);
-                                    ps.setBoolean(2, needs_instructor_consent);
-                                    ps.setBoolean(3, requires_lab_work);
-                                    ps.setInt(4, min_unit);
-                                    ps.setInt(5, max_unit);
-                                    ps.setString(6, grading_type);
-                                    ps.setString(7, course_name);
+                                    ps.setInt(1, course_id);
+                                    ps.setString(2, department);
+                                    ps.setBoolean(3, needs_instructor_consent);
+                                    ps.setBoolean(4, requires_lab_work);
+                                    ps.setInt(5, min_unit);
+                                    ps.setInt(6, max_unit);
+                                    ps.setString(7, grading_type);
+                                    ps.setString(8, course_name);
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -123,13 +129,14 @@
                         <tr>
                             <form action="courses.jsp" method="get">
                                 <input type="hidden" name="action" value="update" />
+                                <td><input value="<%= rs.getInt("course_id") %>" name="course_id" size="12" /></td>
                                 <td><input value="<%= rs.getString("course_name") %>" name="course_name" size="12" /></td>
                                 <td><input value="<%= rs.getString("department") %>" name="department" size="20" /></td>
-                                <td><input value="<%= rs.getBoolean("needs_instructor_consent") %>" name="needs_instructor_consent" size="25" /></td>
-                                <td><input value="<%= rs.getBoolean("requires_lab_work") %>" name="requires_lab_work" size="20" /></td>
                                 <td><input value="<%= rs.getInt("min_unit") %>" name="min_unit" size="10" /></td>
                                 <td><input value="<%= rs.getInt("max_unit") %>" name="max_unit" size="10" /></td>
                                 <td><input value="<%= rs.getString("grading_type") %>" name="grading_type" size="15" /></td>
+                                <td><input value="<%= rs.getBoolean("requires_lab_work") %>" name="requires_lab_work" size="20" /></td>
+                                <td><input value="<%= rs.getBoolean("needs_instructor_consent") %>" name="needs_instructor_consent" size="25" /></td>
                                 <td><input type="submit" value="Update" /></td>
                             </form>
                             <form action="courses.jsp" method="get">
