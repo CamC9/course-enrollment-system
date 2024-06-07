@@ -24,7 +24,7 @@
                             <th>Meeting ID</th>
                         </tr>
                         <tr>
-                            <form action="meetings.jsp" method="get">
+                            <form action="section_meetings.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
                                 <input type="text" name="section_id" size="10" placeholder="Section ID" />
                                 <input type="text" name="meeting_type" size="16" placeholder="Meeting Type" />
@@ -95,7 +95,7 @@
                                 while (rs.next()) {
                         %>
                             <tr>
-                                <form action="meetings.jsp" method="get">
+                                <form action="section_meetings.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
                                     <td><input type="text" value="<%= rs.getString("section_id") %>" name="section_id" size="9" /></td>
                                     <td><input type="text" value="<%= rs.getString("meeting_type") %>" name="meeting_type" size="15" /></td>
@@ -107,7 +107,7 @@
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>
-                                    <form action="meetings.jsp" method="get">
+                                    <form action="section_meetings.jsp" method="get">
                                         <input type="hidden" name="action" value="delete" />
                                         <input type="hidden" name="meeting_id" value="<%= rs.getInt("meeting_id") %>" />
                                         <input type="submit" value="Delete" />
