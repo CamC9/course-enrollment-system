@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Classes Taken By Student Report Form</title>
+    <title>Classes Currently Taken By Student Report Form</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         function updatePID() {
@@ -30,7 +30,7 @@
                             <th>Last</th>
                         </tr>
                         <tr>
-                            <form action="classes_taken_report.jsp" method="get">
+                            <form action="current_classes_taken_report.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
                                 <input type="submit" value="Select Student" />
                                 <select name="PID" id="PIDSelect" onchange="updatePID()">
@@ -83,7 +83,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <form action="classes_taken_report.jsp" method="get">
+                            <form action="current_classes_taken_report.jsp" method="get">
                                 <input type="hidden" name="action" value="show_student_details" />
                                 <input type="hidden" name="PID" id="selectedPID" />
                                 <input type="submit" value="Show Details" />
@@ -118,7 +118,7 @@
                                             while (checkRs.next()) {
                         %>
                             <tr>
-                                <form action="classes_taken_report.jsp" method="get">
+                                <form action="current_classes_taken_report.jsp" method="get">
                                     <input type="hidden" name="action" value="show_classes" />
                                     <td><input type="text" name="PID" value="<%= checkRs.getString("PID") %>" size="10" /></td>
                                     <td><input type="text" name="First" value="<%= checkRs.getString("first") %>" size="13" /></td>
@@ -200,7 +200,7 @@
                                 while (rs.next()) {
                         %>
                             <tr>
-                                <td><%= rs.getInt("section_id") %></td>
+                                <td><%= rs.getString("section_id") %></td>
                                 <td><%= rs.getString("course_name") %></td>
                                 <td><%= rs.getString("class_title") %></td>
                                 <td><%= rs.getString("instructor") %></td>
