@@ -35,7 +35,6 @@
                             <form action="enrollment.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
                                 <input type="text" name="student_pid" size="3" placeholder="PID" />
-                                <input type="text" name="course_name" size="12" placeholder="Course Name" />
                                 <input type="text" name="units" size="5" placeholder="Units" />
                                 <input type="text" name="class_id" size="8" placeholder="Class ID" />
                                 <input type="submit" value="Select Section" />
@@ -52,9 +51,9 @@
                                             String action = request.getParameter("action");
                                             if (action != null && action.equals("select")) {
                                                 conn1.setAutoCommit(false);
-                                                String courseName = request.getParameter("course_name");
-                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT section_id FROM class_sections WHERE course_name = ?");
-                                                pstmt.setString(1, courseName);
+                                                Integer class_id = Integer.parseInt(request.getParameter("class_id"));
+                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT section_id FROM class_sections WHERE class_id = ?");
+                                                pstmt.setInt(1, class_id);
                                                 rs1 = pstmt.executeQuery();
                                                 conn1.commit();
                                                 conn1.setAutoCommit(true);

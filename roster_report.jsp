@@ -24,7 +24,9 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>CourseName</th>
+                            <th>Class ID</th>
+                            <th>Course ID</th>
+                            <th>Class Title</th>
                             <th>Quarter</th>
                             <th>Year</th>
                         </tr>
@@ -119,10 +121,11 @@
                             <tr>
                                 <form action="roster_report.jsp" method="get">
                                     <input type="hidden" name="action" value="show_roster" />
-                                    <td><input type="text" name="Course" value="<%= checkRs.getString("course_name") %>" size="13" /></td>
+                                    <td><input type="text" name="class_id" value="<%= checkRs.getInt("class_id") %>" size="7" /></td>
+                                    <td><input type="text" name="course_id" value="<%= checkRs.getInt("course_id") %>" size="13" /></td>
+                                    <td><input type="text" name="Class" value="<%= checkRs.getString("class_title") %>" size="35" /></td>
                                     <td><input type="text" name="Quarter" value="<%= checkRs.getString("quarter") %>" size="11" /></td>
                                     <td><input type="text" name="Year" value="<%= checkRs.getString("year") %>" size="11" /></td>
-                                    <td><input type="hidden" name="offering_id" value="<%= checkRs.getInt("offering_id") %>" /></td>
                                     <td><input type="submit" value="Show Roster"></td>
                                 </form>
                             </tr>
@@ -142,10 +145,10 @@
                                     String sql = 
                                         "SELECT " +
                                         "s.PID, " +
-                                        "s.SSN, " +
                                         "s.first, " +
                                         "s.middle, " +
                                         "s.last, " +
+                                        "s.SSN, " +
                                         "s.college, " +
                                         "s.residency, " +
                                         "s.is_enrolled, " +
@@ -153,8 +156,7 @@
                                         "s.major, " +
                                         "s.minor, " +
                                         "s.department, " +
-                                        "cr.min_unit, " +
-                                        "cr.max_unit, " +
+                                        "e.units, " +
                                         "cr.grading_type " +
                                         "FROM " +
                                             "students s " +
@@ -162,15 +164,44 @@
                                             "enrollment e ON e.student_pid = s.PID " +
                                         "JOIN " +
                                             "class_sections cs ON e.section_id = cs.section_id " +
-                                        "JOIN " + 
-                                            "courses cr ON cs.course_name = cr.course_name " +
                                         "JOIN " +
-                                            "classes cls ON cs.class_offering_id = cls.offering_id " +
+                                            "classes cls ON cs.class_id = cls.class_id " +
+                                        "JOIN " +
+                                            "courses cr ON cls.course_id = cr.course_id " +
                                         "WHERE " +
-                                            "cls.offering_id = ?::int ";
-
+                                            "cls.class_id = ?::int " +
+                                        "UNION " +
+                                        "SELECT " +
+                                        "s.PID, " +
+                                        "s.first, " +
+                                        "s.middle, " +
+                                        "s.last, " +
+                                        "s.SSN, " +
+                                        "s.college, " +
+                                        "s.residency, " +
+                                        "s.is_enrolled, " +
+                                        "s.graduate_status, " +
+                                        "s.major, " +
+                                        "s.minor, " +
+                                        "s.department, " +
+                                        "pe.units, " +
+                                        "cr.grading_type " +
+                                        "FROM " +
+                                            "students s " +
+                                        "JOIN " +
+                                            "past_enrollment pe ON pe.student_pid = s.PID " +
+                                        "JOIN " +
+                                            "class_sections cs ON pe.section_id = cs.section_id " +
+                                        "JOIN " +
+                                            "classes cls ON cs.class_id = cls.class_id " +
+                                        "JOIN " +
+                                            "courses cr ON cls.course_id = cr.course_id " +
+                                        "WHERE " +
+                                            "cls.class_id = ?::int ";
+                                        
                                     PreparedStatement pstmt = conn.prepareStatement(sql);
-                                    pstmt.setString(1, request.getParameter("offering_id"));
+                                    pstmt.setString(1, request.getParameter("class_id"));
+                                    pstmt.setString(2, request.getParameter("class_id"));
                                     rs = pstmt.executeQuery();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -179,10 +210,10 @@
                             <table border="1">
                                 <tr>
                                     <th>PID</th>
-                                    <th>SSN</th>
                                     <th>First</th>
                                     <th>Middle</th>
                                     <th>Last</th>
+                                    <th>SSN</th>
                                     <th>College</th>
                                     <th>Residency</th>
                                     <th>Is Enrolled</th>
@@ -190,8 +221,7 @@
                                     <th>Major</th>
                                     <th>Minor</th>
                                     <th>Department</th>
-                                    <th>Min Unit</th>
-                                    <th>Max Unit</th>
+                                    <th>Units</th>
                                     <th>Grading Type</th>
                                 </tr>
                         <%
@@ -201,10 +231,10 @@
                         %>
                             <tr>
                                 <td><%= rs.getString("PID") %></td>
-                                <td><%= rs.getString("SSN") %></td>
                                 <td><%= rs.getString("first") %></td>
                                 <td><%= rs.getString("middle") %></td>
                                 <td><%= rs.getString("last") %></td>
+                                <td><%= rs.getString("SSN") %></td>
                                 <td><%= rs.getString("college") %></td>
                                 <td><%= rs.getString("residency") %></td>
                                 <td><%= rs.getBoolean("is_enrolled") %></td>
@@ -212,8 +242,7 @@
                                 <td><%= rs.getString("major") %></td>
                                 <td><%= rs.getString("minor") %></td>
                                 <td><%= rs.getString("department") %></td>
-                                <td><%= rs.getInt("min_unit") %></td>
-                                <td><%= rs.getInt("max_unit") %></td>
+                                <td><%= rs.getInt("units") %></td>
                                 <td><%= rs.getString("grading_type") %></td>
                             </tr>
                         <%

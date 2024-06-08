@@ -35,7 +35,7 @@
                             <form action="past_enrollment.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
                                 <input type="text" name="student_pid" size="10" placeholder="PID" />
-                                <input type="text" name="course_name" size="13" placeholder="Course Name" />
+                                <input type="text" name="course_id" size="13" placeholder="Course ID" />
                                 <input type="text" name="class_id" size="11" placeholder="Class ID" />
                                 <input type="text" name="units" size="5" placeholder="Units" />
                                 <input type="text" name="grade" size="5" placeholder="Grade" />
@@ -55,11 +55,11 @@
                                             String action = request.getParameter("action");
                                             if (action != null && action.equals("select")) {
                                                 conn1.setAutoCommit(false);
-                                                String courseName = request.getParameter("course_name");
+                                                Integer course_id = Integer.parseInt(request.getParameter("course_id"));
                                                 String quarter = request.getParameter("quarter");
                                                 Integer year = Integer.parseInt(request.getParameter("year"));
-                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT section_id FROM class_sections WHERE class_offering_id = (SELECT offering_id FROM classes WHERE course_name = ? AND quarter = ? AND year = ?)");
-                                                pstmt.setString(1, courseName);
+                                                PreparedStatement pstmt = conn1.prepareStatement("SELECT section_id FROM class_sections WHERE class_id = (SELECT class_id FROM classes WHERE course_id = ? AND quarter = ? AND year = ?)");
+                                                pstmt.setInt(1, course_id);
                                                 pstmt.setString(2, quarter);
                                                 pstmt.setInt(3, year);
                                                 rs1 = pstmt.executeQuery();

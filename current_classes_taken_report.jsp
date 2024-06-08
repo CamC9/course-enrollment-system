@@ -143,9 +143,10 @@
                                     String sql = 
                                         "SELECT " +
                                         "e.section_id, " +
-                                        "cr.course_name, " +
-                                        "cls.offering_id, " +
+                                        "cls.class_id, " +
                                         "cls.class_title, " +
+                                        "cr.course_id, " +
+                                        "cr.course_name, " +
                                         "cs.instructor, " +
                                         "cs.enrollment_cap, " +
                                         "e.units, " +
@@ -156,19 +157,20 @@
                                             "enrollment e " +
                                         "JOIN " + 
                                             "class_sections cs ON e.section_id = cs.section_id " +
-                                        "JOIN " + 
-                                            "courses cr ON cs.course_name = cr.course_name " +
                                         "JOIN " +
-                                            "classes cls ON cr.course_name = cls.course_name " +
+                                            "classes cls ON cs.class_id = cls.class_id " +
+                                        "JOIN " + 
+                                            "courses cr ON cls.course_id = cr.course_id " +
                                         "WHERE " +
                                             "e.student_pid = ? " +
                                             "AND cls.quarter = 'Spring' " +
                                             "AND cls.year = 2018 " +
                                         "GROUP BY " +
                                             "e.section_id, " +
-                                            "cr.course_name, " +
-                                            "cls.offering_id, " + 
+                                            "cls.class_id, " + 
                                             "cls.class_title, " +
+                                            "cr.course_id, " +
+                                            "cr.course_name, " +
                                             "cs.instructor, " +
                                             "cs.enrollment_cap, " +
                                             "e.units, " +
@@ -185,15 +187,16 @@
                         %>
                             <table border="1">
                                 <tr>
-                                    <th>SectionID</th>
-                                    <th>CourseName</th>
-                                    <th>ClassID</th>
-                                    <th>ClassTitle</th>
+                                    <th>Section ID</th>
+                                    <th>Class ID</th>
+                                    <th>Class Title</th>
+                                    <th>Course ID</th>
+                                    <th>Course Name</th>
                                     <th>Instructor</th>
-                                    <th>EnrollmentCap</th>
+                                    <th>Enrollment Cap</th>
                                     <th>Units</th>
-                                    <th>GradingType</th>
-                                    <th>LabRequired</th>
+                                    <th>Grading Type</th>
+                                    <th>Lab Required</th>
                                 </tr>
                         <%
 
@@ -202,9 +205,10 @@
                         %>
                             <tr>
                                 <td><%= rs.getString("section_id") %></td>
-                                <td><%= rs.getString("course_name") %></td>
-                                <td><%= rs.getInt("offering_id") %></td>
+                                <td><%= rs.getInt("class_id") %></td>
                                 <td><%= rs.getString("class_title") %></td>
+                                <td><%= rs.getInt("course_id") %></td>
+                                <td><%= rs.getString("course_name") %></td>
                                 <td><%= rs.getString("instructor") %></td>
                                 <td><%= rs.getInt("enrollment_cap") %></td>
                                 <td><%= rs.getInt("units") %></td>

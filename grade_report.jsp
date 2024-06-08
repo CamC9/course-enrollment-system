@@ -93,12 +93,12 @@
 
                         <%
                             Connection conn = null;
-                            Statement stmt = null;
+                            PreparedStatement pstmt = null;
                             ResultSet rs = null;
+                            String errorMessage = "";
                             try {
                                 Class.forName("org.postgresql.Driver");
                                 conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
-                                stmt = conn.createStatement();
                                 
                                 // Check if any form data was submitted
                                 String action = request.getParameter("action");
@@ -142,12 +142,13 @@
                                 if (action != null && action.equals("show_classes")) {
                                     conn.setAutoCommit(false);
 
-                                    String sql = "SELECT combined.section_id, combined.course_name, c.class_title, combined.quarter, combined.year, combined.grade " +
+                                    String sql = "SELECT combined.section_id, combined.class_id, combined.units, c.class_title, combined.quarter, combined.year, combined.grade " +
                                         "FROM " +
                                         "    ( " +
                                         "        SELECT " +
                                         "            e.section_id, " +
-                                        "            e.course_name, " +
+                                        "            e.class_id, " +
+                                        "            e.units, " +
                                         "            NULL AS quarter, " +
                                         "            NULL AS year, " +
                                         "            NULL AS grade " +
@@ -158,20 +159,22 @@
                                         "        UNION " +
                                         "        SELECT " +
                                         "            pe.section_id, " +
-                                        "            pe.course_name, " +
-                                        "            pe.quarter, " +
-                                        "            pe.year, " +
+                                        "            pe.class_id, " +
+                                        "            pe.units, " +
+                                        "            cls.quarter, " +
+                                        "            cls.year, " +
                                         "            pe.grade " +
                                         "        FROM " +
                                         "            past_enrollment pe " +
+                                        "        JOIN classes cls ON pe.class_id = cls.class_id " + 
                                         "        WHERE " +
                                         "            pe.student_pid = ? " +
                                         "    ) combined " +
                                         "JOIN class_sections s ON s.section_id = combined.section_id " +
-                                        "JOIN classes c ON c.offering_id = s.class_offering_id " +
+                                        "JOIN classes c ON c.class_id = s.class_id " +
                                         "ORDER BY combined.year DESC, combined.quarter DESC ";
 
-                                    PreparedStatement pstmt = conn.prepareStatement(sql);
+                                    pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
                                     pstmt.setString(1, request.getParameter("PID"));
                                     pstmt.setString(2, request.getParameter("PID"));
                                     rs = pstmt.executeQuery();
@@ -181,84 +184,131 @@
                         %>
                             <table border="1">
                                 <tr>
-                                    <th>SectionID</th>
-                                    <th>CourseName</th>
-                                    <th>ClassTitle</th>
+                                    <th>Section ID</th>
+                                    <th>Course ID</th>
+                                    <th>Class Title</th>
                                     <th>Quarter</th>
                                     <th>Year</th>
                                     <th>Grade</th>
                                 </tr>
-                        <%
-                                String lastQuarter = "";
-                                int lastYear = -1;
-                                ArrayList<Double> allGrades = new ArrayList<Double>();
-                                ArrayList<Double> currQuarterGrades = new ArrayList<Double>();
-                                // Iterate over the result set and generate the table rows
-                                while (rs.next()) {
-                                    %>
-                                        <tr>
-                                            <td><%= rs.getInt("section_id") %></td>
-                                            <td><%= rs.getString("course_name") %></td>
-                                            <td><%= rs.getString("class_title") %></td>
-                                            <td><%= rs.getString("quarter") %></td>
-                                            <td><%= rs.getInt("year") %></td>
-                                            <td><%= rs.getString("grade") %></td>
-                                        </tr>
-                                    <%
-                                    // Need to convert GPA from letter grade to number using grade_conversion table
-                                    if (rs.getString("grade") == null) {
-                                        continue;
+                                <%
+                                    String lastQuarter = "";
+                                    int lastYear = -1;
+                                    Double totalGradePoints = 0.0;
+                                    int totalUnits = 0;
+                                    Double currQuarterGradePoints = 0.0;
+                                    int currQuarterUnits = 0;
+                                
+                                    String grade_val = "";
+                                    String quarter_val = "";
+                                    Integer year_val = 0;
+                                
+                                    if (rs.next()) {
+                                        do {
+                                            grade_val = rs.getString("grade");
+                                            quarter_val = rs.getString("quarter");
+                                            year_val = rs.getInt("year");
+                                            int units = rs.getInt("units");
+                                            if (grade_val == null) {
+                                                grade_val = "";
+                                            }
+                                            if (quarter_val == null) {
+                                                quarter_val = "Spring";
+                                            }
+                                            if (year_val == 0) {
+                                                year_val = 2018;
+                                            }
+                                %>
+                                            <tr>
+                                                <td><%= rs.getString("section_id") %></td>
+                                                <td><%= rs.getInt("class_id") %></td>
+                                                <td><%= rs.getString("class_title") %></td>
+                                                <td><%= quarter_val %></td>
+                                                <td><%= year_val %></td>
+                                                <td><%= grade_val %></td>
+                                            </tr>
+                                <%
+                                            if (grade_val.isEmpty()) {
+                                %>
+                                            <tr><td colspan="6">&nbsp;</td></tr>
+                                <%
+                                                continue;
+                                            }
+                                
+                                            PreparedStatement gradeConversionStmt = conn.prepareStatement("SELECT number_grade FROM grade_conversion WHERE letter_grade = ?");
+                                            gradeConversionStmt.setString(1, grade_val);
+                                            ResultSet gradeConversionRs = gradeConversionStmt.executeQuery();
+                                            gradeConversionRs.next();
+                                            double gradeDouble = gradeConversionRs.getDouble("number_grade");
+                                            totalGradePoints += gradeDouble * units;
+                                            totalUnits += units;
+                                            if (gradeDouble > 0.0) {
+                                                currQuarterGradePoints += gradeDouble * units;
+                                                currQuarterUnits += units;
+                                            }
+                                
+                                            boolean isLastRow = rs.isLast();
+                                            String nextQuarter = null;
+                                            int nextYear = -1;
+                                
+                                            if (!isLastRow) {
+                                                rs.next();
+                                                nextQuarter = rs.getString("quarter");
+                                                nextYear = rs.getInt("year");
+                                                rs.previous();
+                                            }
+                                
+                                            if (isLastRow || (nextQuarter != null && !nextQuarter.equals(quarter_val)) || (nextYear != -1 && nextYear != year_val)) {
+                                %>
+                                            <tr>
+                                                <td>Quarter GPA: <%= String.format("%.2f", currQuarterGradePoints / currQuarterUnits) %></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6">&nbsp;</td>
+                                            </tr>
+                                <%
+                                                lastQuarter = quarter_val;
+                                                lastYear = year_val;
+                                                currQuarterGradePoints = 0.0;
+                                                currQuarterUnits = 0;
+                                            }
+                                        } while (rs.next());
                                     }
-                                    PreparedStatement gradeConversionStmt = conn.prepareStatement("SELECT number_grade FROM grade_conversion WHERE letter_grade = ?");
-                                    gradeConversionStmt.setString(1, rs.getString("grade"));
-                                    ResultSet gradeConversionRs = gradeConversionStmt.executeQuery();
-                                    gradeConversionRs.next();
-                                    double gradeDouble = gradeConversionRs.getDouble("number_grade");
-                                    allGrades.add(gradeDouble);
-                                    if (gradeDouble > 0.0) {
-                                        currQuarterGrades.add(gradeDouble);
-                                        allGrades.add(gradeDouble);
-                                    }
-                                    if ((rs.getString("quarter") != null && !rs.getString("quarter").equals(lastQuarter)) || (rs.getInt("year") != -1 && rs.getInt("year") != lastYear)) {
-                                        %>
-                                        <tr>
-                                            <td>Quarter GPA: <%= String.format("%.2f", currQuarterGrades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0)) %></td>
-                                        </tr>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="6">&nbsp;</td>
-                                        </tr>
-                                        <%
-                                        // Print a blank row between quarters
-                                        lastQuarter = rs.getString("quarter");
-                                        lastYear = rs.getInt("year");
-                                        currQuarterGrades.clear();
-                                    }
-                                }
                                 %>
                                 <tr>
                                     <td colspan="6">&nbsp;</td>
                                 </tr>
                                 <tr>
-                                    <td>Cumulative GPA: <%= String.format("%.2f", allGrades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0)) %></td>
+                                    <td>Cumulative GPA: <%= String.format("%.2f", totalGradePoints / totalUnits) %></td>
                                 </tr>
-
                                 </table>
                             <%
                             } catch (Exception e) {
+                                errorMessage = e.getMessage();
+                                %>
+                                <tr>
+                                    <td colspan="6"><%= errorMessage %></td>
+                                </tr>
+                                <%
                                 e.printStackTrace();
                             } finally {
                                 try {
                                     if (rs != null) {
                                         rs.close();
                                     }
-                                    if (stmt != null) {
-                                        stmt.close();
+                                    if (pstmt != null) {
+                                        pstmt.close();
                                     }
                                     if (conn != null) {
                                         conn.close();
                                     }
                                 } catch (Exception e) {
+                                    errorMessage = e.getMessage();
+                                    %>
+                                    <tr>
+                                        <td colspan="6"><%= errorMessage %></td>
+                                    </tr>
+                                    <%
                                     e.printStackTrace();
                                 }
                             }

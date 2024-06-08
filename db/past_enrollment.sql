@@ -5,7 +5,7 @@ CREATE TABLE past_enrollment (
     units int NOT NULL,
     grade VARCHAR(255),
     enrollment_id SERIAL PRIMARY KEY,
-    FOREIGN KEY (class_id) REFERENCES classes(offering_id),
+    FOREIGN KEY (class_id) REFERENCES classes(class_id),
     FOREIGN KEY (student_pid) REFERENCES students(PID),
     FOREIGN KEY (section_id) REFERENCES class_sections(section_id)
 );

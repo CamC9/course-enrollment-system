@@ -92,16 +92,16 @@
                                     Integer min_unit = Integer.parseInt(request.getParameter("min_unit"));
                                     Integer max_unit = Integer.parseInt(request.getParameter("max_unit"));
                                     String grading_type = request.getParameter("grading_type");
-                                    String sql = "UPDATE courses SET course_id = ?, department = ?, needs_instructor_consent = ?, requires_lab_work = ?, min_unit = ?, max_unit = ?, grading_type = ? WHERE course_name = ?";
+                                    String sql = "UPDATE courses SET course_name = ?, department = ?, needs_instructor_consent = ?, requires_lab_work = ?, min_unit = ?, max_unit = ?, grading_type = ? WHERE course_id = ?";
                                     PreparedStatement ps = conn.prepareStatement(sql);
-                                    ps.setInt(1, course_id);
+                                    ps.setString(1, course_name);
                                     ps.setString(2, department);
                                     ps.setBoolean(3, needs_instructor_consent);
                                     ps.setBoolean(4, requires_lab_work);
                                     ps.setInt(5, min_unit);
                                     ps.setInt(6, max_unit);
                                     ps.setString(7, grading_type);
-                                    ps.setString(8, course_name);
+                                    ps.setInt(8, course_id);
                                     ps.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -110,11 +110,11 @@
 
                                 if (action != null && action.equals("delete")) {
                                     conn.setAutoCommit(false);
-                                    String course_name = request.getParameter("course_name");
+                                    Integer course_id = Integer.parseInt(request.getParameter("course_id"));
                                      
-                                    String sql = "DELETE FROM courses WHERE course_name = ?";
+                                    String sql = "DELETE FROM courses WHERE course_id = ?";
                                     PreparedStatement ps = conn.prepareStatement(sql);
-                                    ps.setString(1, course_name);
+                                    ps.setInt(1, course_id);
                                      
                                     ps.executeUpdate();
                                     conn.commit();
@@ -141,7 +141,7 @@
                             </form>
                             <form action="courses.jsp" method="get">
                                 <input type="hidden" name="action" value="delete" />
-                                <input type="hidden" name="course_name" value="<%= rs.getString("course_name") %>" />
+                                <input type="hidden" name="course_id" value="<%= rs.getInt("course_id") %>" />
                                 <td><input type="submit" value="Delete" /></td>
                             </form>
                         </tr>

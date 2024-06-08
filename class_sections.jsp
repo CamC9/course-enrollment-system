@@ -16,19 +16,17 @@
                     <thead>
                         <tr>
                             <th>section_id</th>
-                            <th>class_offering_id</th>
+                            <th>class_id</th>
                             <th>instructor</th>
                             <th>enrollment_cap</th>
-                            <th>course_name</th>
                         </tr>
                         <tr>
                             <form action="class_sections.jsp" method="get">
                                 <input type="hidden" name="action" value="add" />
                                 <input type="text" name="section_id" size="9" placeholder="Section ID" />
-                                <input type="text" name="class_offering_id" size="17" placeholder="Class Offering ID" />
+                                <input type="text" name="class_id" size="17" placeholder="Class ID" />
                                 <input type="text" name="instructor" size="18" placeholder="Instructor" />
                                 <input type="text" name="enrollment_cap" size="15" placeholder="Enrollment Cap" />
-                                <input type="text" name="course_name" size="13" placeholder="Course Name" />
                                 <input type="submit" value="Add" />
                             </form>
                         </tr>
@@ -52,12 +50,11 @@
                                     // Create the prepared Statement
                                     // Then INSERT the data into the enrollment table
 
-                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO class_sections VALUES (?, ?, ?, ?, ?)");
-                                    pstmt.setString(1, request.getParameter("course_name"));
-                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("class_offering_id")));
+                                    PreparedStatement pstmt = conn.prepareStatement("INSERT INTO class_sections VALUES (?, ?, ?, ?)");
+                                    pstmt.setString(1, request.getParameter("section_id"));
+                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("class_id")));
                                     pstmt.setString(3, request.getParameter("instructor"));
                                     pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_cap")));
-                                    pstmt.setString(5, request.getParameter("section_id"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -66,12 +63,11 @@
 
                                 if (action != null && action.equals("update")) {
                                     conn.setAutoCommit(false);
-                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE class_sections SET course_name = ?, class_offering_id = ?, instructor = ?, enrollment_cap = ? WHERE section_id = ?"); 
-                                    pstmt.setString(1, request.getParameter("course_name"));
-                                    pstmt.setInt(2, Integer.parseInt(request.getParameter("class_offering_id")));
-                                    pstmt.setString(3, request.getParameter("instructor"));
-                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("enrollment_cap")));
-                                    pstmt.setString(5, request.getParameter("section_id"));
+                                    PreparedStatement pstmt = conn.prepareStatement("UPDATE class_sections SET class_id = ?, instructor = ?, enrollment_cap = ? WHERE section_id = ?"); 
+                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("class_id")));
+                                    pstmt.setString(2, request.getParameter("instructor"));
+                                    pstmt.setInt(3, Integer.parseInt(request.getParameter("enrollment_cap")));
+                                    pstmt.setString(4, request.getParameter("section_id"));
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -95,10 +91,9 @@
                                 <form action="class_sections.jsp" method="get">
                                     <input type="hidden" name="action" value="update" />
                                     <td><input type="text" name="section_id" value="<%= rs.getString("section_id") %>" size="8" /></td>
-                                    <td><input type="text" name="class_offering_id" value="<%= rs.getInt("class_offering_id") %>" size="16" /></td>
+                                    <td><input type="text" name="class_id" value="<%= rs.getInt("class_id") %>" size="16" /></td>
                                     <td><input type="text" name="instructor" value="<%= rs.getString("instructor") %>" size="17" /></td>
                                     <td><input type="text" name="enrollment_cap" value="<%= rs.getInt("enrollment_cap") %>" size="14" /></td>
-                                    <td><input type="text" name="course_name" value="<%= rs.getString("course_name") %>" size="12" /></td>
                                     <td><input type="submit" value="Update"></td>
                                 </form>
                                 <td>

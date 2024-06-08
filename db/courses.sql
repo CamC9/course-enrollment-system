@@ -1,6 +1,6 @@
 CREATE TABLE courses (
-    course_id int NOT NULL,
-    course_name VARCHAR(255) PRIMARY KEY,
+    course_id int PRIMARY KEY,
+    course_name VARCHAR(255) NOT NULL,
     department VARCHAR(255) NOT NULL,
     min_unit INT NOT NULL,
     max_unit INT NOT NULL,
