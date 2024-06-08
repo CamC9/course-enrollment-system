@@ -144,6 +144,7 @@
                                         "SELECT " +
                                         "e.section_id, " +
                                         "cr.course_name, " +
+                                        "cls.offering_id, " +
                                         "cls.class_title, " +
                                         "cs.instructor, " +
                                         "cs.enrollment_cap, " +
@@ -166,6 +167,7 @@
                                         "GROUP BY " +
                                             "e.section_id, " +
                                             "cr.course_name, " +
+                                            "cls.offering_id, " + 
                                             "cls.class_title, " +
                                             "cs.instructor, " +
                                             "cs.enrollment_cap, " +
@@ -185,13 +187,13 @@
                                 <tr>
                                     <th>SectionID</th>
                                     <th>CourseName</th>
+                                    <th>ClassID</th>
                                     <th>ClassTitle</th>
                                     <th>Instructor</th>
                                     <th>EnrollmentCap</th>
                                     <th>Units</th>
                                     <th>GradingType</th>
-                                    <th>NeedsInstructorConsent</th>
-                                    <th>RequiresLabWork</th>
+                                    <th>LabRequired</th>
                                 </tr>
                         <%
 
@@ -201,12 +203,12 @@
                             <tr>
                                 <td><%= rs.getString("section_id") %></td>
                                 <td><%= rs.getString("course_name") %></td>
+                                <td><%= rs.getInt("offering_id") %></td>
                                 <td><%= rs.getString("class_title") %></td>
                                 <td><%= rs.getString("instructor") %></td>
                                 <td><%= rs.getInt("enrollment_cap") %></td>
                                 <td><%= rs.getInt("units") %></td>
                                 <td><%= rs.getString("grading_type") %></td>
-                                <td><%= rs.getBoolean("needs_instructor_consent") %></td>
                                 <td><%= rs.getBoolean("requires_lab_work") %></td>
                             </tr>
                         <%
