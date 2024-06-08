@@ -147,8 +147,7 @@
                                         "cls.class_title, " +
                                         "cs.instructor, " +
                                         "cs.enrollment_cap, " +
-                                        "cr.min_unit, " +
-                                        "cr.max_unit, " +
+                                        "e.units, " +
                                         "cr.grading_type, " +
                                         "cr.needs_instructor_consent, " +
                                         "cr.requires_lab_work " +
@@ -162,14 +161,15 @@
                                             "classes cls ON cr.course_name = cls.course_name " +
                                         "WHERE " +
                                             "e.student_pid = ? " +
+                                            "AND cls.quarter = 'Spring' " +
+                                            "AND cls.year = 2018 " +
                                         "GROUP BY " +
                                             "e.section_id, " +
                                             "cr.course_name, " +
                                             "cls.class_title, " +
                                             "cs.instructor, " +
                                             "cs.enrollment_cap, " +
-                                            "cr.min_unit, " +
-                                            "cr.max_unit, " +
+                                            "e.units, " +
                                             "cr.grading_type, " +
                                             "cr.needs_instructor_consent, " +
                                             "cr.requires_lab_work";
@@ -188,8 +188,7 @@
                                     <th>ClassTitle</th>
                                     <th>Instructor</th>
                                     <th>EnrollmentCap</th>
-                                    <th>MinUnit</th>
-                                    <th>MaxUnit</th>
+                                    <th>Units</th>
                                     <th>GradingType</th>
                                     <th>NeedsInstructorConsent</th>
                                     <th>RequiresLabWork</th>
@@ -205,8 +204,7 @@
                                 <td><%= rs.getString("class_title") %></td>
                                 <td><%= rs.getString("instructor") %></td>
                                 <td><%= rs.getInt("enrollment_cap") %></td>
-                                <td><%= rs.getInt("min_unit") %></td>
-                                <td><%= rs.getInt("max_unit") %></td>
+                                <td><%= rs.getInt("units") %></td>
                                 <td><%= rs.getString("grading_type") %></td>
                                 <td><%= rs.getBoolean("needs_instructor_consent") %></td>
                                 <td><%= rs.getBoolean("requires_lab_work") %></td>
