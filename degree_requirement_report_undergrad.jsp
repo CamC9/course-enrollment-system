@@ -119,10 +119,14 @@
                                     conn.setAutoCommit(true);
 
                                     while (rs.next()) {
+                                        String pid = rs.getString("PID");
                         %>
+                            <script>
+                                localstorage.setItem("undergradPID", "<%= pid %>");
+                            </script>
                             <tr>
                                 <form action="degree_requirement_report_undergrad.jsp" method="get">
-                                    <td><input type="text" name="PID" value="<%= rs.getString("PID") %>" size="10" /></td>
+                                    <td><input type="text" name="PID" value="<%= pid %>" size="10" /></td>
                                     <td><input type="text" name="First" value="<%= rs.getString("first") %>" size="13" /></td>
                                     <td><input type="text" name="Middle" value="<%= rs.getString("middle") %>" size="11" /></td>
                                     <td><input type="text" name="Last" value="<%= rs.getString("last") %>" size="11" /></td>
@@ -152,12 +156,12 @@
                         %>
                     </tbody>
                 </table>
-                <table>
+                <table border="1">
                     <thead>
                         <tr>
-                            <th>DegreeName</th>
+                            <th>Degree Name</th>
                             <th>Category/Department</th>
-                            <th>MinUnits</th>
+                            <th>Units Left</th>
                         </tr>
                         <tr>
                             <form action="degree_requirement_report_undergrad.jsp" method="get">
@@ -208,6 +212,7 @@
                                     %>
                                 </select>
                                 <input type="hidden" name="DegreeName" id="selectedDegreeName" />
+                                <input type="hidden" name="hiddenPID" id="hiddenPID" value="<%= request.getParameter("UndergradPID") %>" />
                                 <input type="submit" value="Show Degree Requirements" />
                             </form>
                         </tr>
@@ -215,6 +220,7 @@
                         Connection conn3 = null;
                         PreparedStatement pstmt3 = null;
                         ResultSet rs3 = null;
+                        String errorMessage = "";
                         try {
                             Class.forName("org.postgresql.Driver");
                             conn3 = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
@@ -226,11 +232,9 @@
                                
                                 // Retrieve all student attributes given the PID
                                 String degreeName = request.getParameter("DegreeName");
-                                String sql = "SELECT departments.department_name, degree_requirements.degree_name, category_name, SUM(min_units) AS total_min_units " +
-             "FROM departments " +
-             "JOIN degree_requirements ON departments.department_name = degree_requirements.department_name " +
-             "WHERE degree_requirements.degree_name = ? " +
-             "GROUP BY departments.department_name, degree_requirements.degree_name, category_name";
+                                String sql = "SELECT degree_name, department_name, category_name, min_units " +
+                                                "FROM degree_requirements " +
+                                                "WHERE degree_name = ? ";
                                 pstmt3 = conn3.prepareStatement(sql);
                                 pstmt3.setString(1, request.getParameter("DegreeName"));
                                 rs3 = pstmt3.executeQuery();
@@ -246,30 +250,57 @@
                                         firstDegreeName = rs3.getString("degree_name");
                                         firstDepartmentName = rs3.getString("department_name");
                                     }
+
+                                    // Get the units taken by the student in the category
+                                    String category_name = rs3.getString("category_name");
+                                    String xsql = 
+                                        "SELECT SUM(pe.units) AS units_taken " +
+                                        "FROM past_enrollment pe " +
+                                        "JOIN students s ON pe.student_pid = s.pid " +
+                                        "JOIN classes cls ON pe.class_id = cls.class_id " +
+                                        "JOIN category_consists_of cco ON cls.course_id = cco.course_id " +
+                                        "WHERE pe.student_pid = ? " +
+                                        "AND cco.category_name = ?";
+                                    PreparedStatement pstmt4 = conn3.prepareStatement(xsql);
+                                    pstmt4.setString(1, request.getParameter("hiddenPID"));
+                                    pstmt4.setString(2, category_name);
+                                    ResultSet rs4 = pstmt4.executeQuery();
+                                    int categoryUnitsTaken = 0;
+                                    if (rs4.next()) {
+                                        categoryUnitsTaken = rs4.getInt("units_taken");
+                                    }
+                                    rs4.close();
+                                    pstmt4.close();
                     %>
                                     <tr>
                                         <form action="degree_requirement_report_undergrad.jsp" method="get">
                                             <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="15" /></td>
-                                            <td><input type="text" name="Category" value="<%= rs3.getString("category_name") %>" size="17" /></td>
-                                            <td><input type="text" name="MinUnits" value="<%= rs3.getInt("total_min_units") %>" size="7" /></td>
+                                            <td><input type="text" name="Category" value="<%= rs3.getString("category_name") %>" size="22" /></td>
+                                            <td><input type="text" name="Units Left" value="<%= rs3.getInt("min_units") - categoryUnitsTaken %>" size="9" /></td>
                                         </form>
                                     </tr>
                     <%
-                                    totalMinUnits += rs3.getInt("total_min_units");
+                                    totalMinUnits += rs3.getInt("min_units") - categoryUnitsTaken;
                                 }
                                 // Add new row that displays the sum of the min_units
                     %>
                                 <tr>
                                     <form action="degree_requirement_report_undergrad.jsp" method="get">
                                         <td><input type="text" name="DegreeName" value="<%= firstDegreeName %>" size="15" /></td>
-                                        <td><input type="text" name="Category" value="<%= firstDepartmentName %>" size="17" /></td>
-                                        <td><input type="text" name="MinUnits" value="<%= totalMinUnits %>" size="7" /></td>
+                                        <td><input type="text" name="Category" value="<%= firstDepartmentName %>" size="22" /></td>
+                                        <td><input type="text" name="Units Left" value="<%= totalMinUnits %>" size="9" /></td>
                                     </form>
                                 </tr>
                     <%
                                 
                             }
                         } catch (Exception e) {
+                            errorMessage = e.getMessage();
+                            %> 
+                            <tr>
+                                <td colspan="3"><%= errorMessage %></td>
+                            </tr>
+                            <% 
                             e.printStackTrace();
                         } finally {
                             try {
@@ -283,6 +314,12 @@
                                     conn3.close();
                                 }
                             } catch (Exception e) {
+                                errorMessage = e.getMessage();
+                                %> 
+                                <tr>
+                                    <td colspan="3"><%= errorMessage %></td>
+                                </tr>
+                                <% 
                                 e.printStackTrace();
                             }
                         }

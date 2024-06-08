@@ -7,14 +7,9 @@ CREATE TABLE taking_degree (
     FOREIGN KEY (department) REFERENCES departments(department_name)
 );
 
--- Valid PID and department
 INSERT INTO taking_degree (PID, degree_name, department)
-    VALUES ('A99', 'BSC IN CS', 'Computer Science');
-
--- Different student, same department
+    VALUES ('1', 'BSC IN CS', 'Computer Science');
 INSERT INTO taking_degree (PID, degree_name, department)
-    VALUES ('A88', 'BSC IN COGS', 'Cognitive Science');
-
--- Different student, different department
+    VALUES ('2', 'BSC IN COGS', 'Cognitive Science');
 INSERT INTO taking_degree (PID, degree_name, department)
-    VALUES ('A77', 'MSC IN COGS', 'Cognitive Science');
+    VALUES ('3', 'MSC IN COGS', 'Cognitive Science');
