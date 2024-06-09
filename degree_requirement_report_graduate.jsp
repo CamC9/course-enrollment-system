@@ -159,9 +159,7 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <th>Degree Name</th>
-                            <th>Category/Department</th>
-                            <th>Units Left</th>
+                            <th>Completed Concentrations </th>
                         </tr>
                         <tr>
                             <form action="degree_requirement_report_graduate.jsp" method="get">
@@ -230,69 +228,46 @@
                             if (action != null && action.equals("show_degree_requirements")) {
                                 conn3.setAutoCommit(false);
                                
-                                // Retrieve all student attributes given the PID
+                                // Display the completed concentrations, which is defined by having the min_units met and the min_gpa met
+                                String gradPID = request.getParameter("hiddenPID");
+                                // Get the degree requirements for the selected degree
                                 String degreeName = request.getParameter("DegreeName");
-                                String sql = "SELECT degree_name, department_name, category_name, min_units " +
-                                                "FROM degree_requirements " +
-                                                "WHERE degree_name = ? ";
-                                pstmt3 = conn3.prepareStatement(sql);
-                                pstmt3.setString(1, request.getParameter("DegreeName"));
+                                // Get completed concentrations for the student
+                                String completedConcentrationsPt1SQL = "SELECT cc.concentration_name " +
+                                                "FROM concentration_consists_of cc " +
+                                                "JOIN classes cls ON cc.course_id = cls.course_id " +
+                                                "JOIN past_enrollment pe ON cls.class_id = pe.class_id " +
+                                                "WHERE pe.student_pid = ? AND cc.degree_name = ? AND pe.grade NOT LIKE 'IN%' " +
+                                                "GROUP BY cc.concentration_name " +
+                                                "HAVING SUM(pe.units) >= MIN(cc.min_units_concentration) ";
+                                // Get rid of concentrations that don't have the minimum GPA
+                                // Ignore courses taken for grading_type = 'S/U' for GPA calculation, but include them in the units calculation
+
+
+                                pstmt3 = conn3.prepareStatement(completedConcentrationsPt1SQL);
+                                pstmt3.setString(1, gradPID);
+                                pstmt3.setString(2, degreeName);
                                 rs3 = pstmt3.executeQuery();
                                 conn3.commit();
                                 conn3.setAutoCommit(true);
                                 boolean hasResults = false;
-                                String firstDegreeName = "";
-                                String firstDepartmentName = "";
-                                int totalMinUnits = 0;
                                 while (rs3.next()) {
-                                    if (!hasResults) {
-                                        hasResults = true;
-                                        firstDegreeName = rs3.getString("degree_name");
-                                        firstDepartmentName = rs3.getString("department_name");
-                                    }
-
-                                    // Get the units taken by the student in the category
-                                    String category_name = rs3.getString("category_name");
-                                    String xsql = 
-                                        "SELECT SUM(pe.units) AS units_taken " +
-                                        "FROM past_enrollment pe " +
-                                        "JOIN students s ON pe.student_pid = s.pid " +
-                                        "JOIN classes cls ON pe.class_id = cls.class_id " +
-                                        "JOIN category_consists_of cco ON cls.course_id = cco.course_id " +
-                                        "WHERE pe.student_pid = ? " +
-                                        "AND cco.category_name = ?";
-                                    PreparedStatement pstmt4 = conn3.prepareStatement(xsql);
-                                    pstmt4.setString(1, request.getParameter("hiddenPID"));
-                                    pstmt4.setString(2, category_name);
-                                    ResultSet rs4 = pstmt4.executeQuery();
-                                    int categoryUnitsTaken = 0;
-                                    if (rs4.next()) {
-                                        categoryUnitsTaken = rs4.getInt("units_taken");
-                                    }
-                                    rs4.close();
-                                    pstmt4.close();
                     %>
                                     <tr>
                                         <form action="degree_requirement_report_graduate.jsp" method="get">
-                                            <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="25" /></td>
-                                            <td><input type="text" name="Category" value="<%= rs3.getString("category_name") %>" size="22" /></td>
-                                            <td><input type="text" name="Units Left" value="<%= rs3.getInt("min_units") - categoryUnitsTaken %>" size="9" /></td>
+                                            <td><input type="text" name="ConcentrationName" value="<%= rs3.getString("concentration_name") %>" size="27" /></td>
                                         </form>
                                     </tr>
                     <%
-                                    totalMinUnits += rs3.getInt("min_units") - categoryUnitsTaken;
+                                    hasResults = true;
                                 }
-                                // Add new row that displays the sum of the min_units
+                                if (!hasResults) {
                     %>
-                                <tr>
-                                    <form action="degree_requirement_report_graduate.jsp" method="get">
-                                        <td><input type="text" name="DegreeName" value="<%= firstDegreeName %>" size="25" /></td>
-                                        <td><input type="text" name="Category" value="<%= firstDepartmentName %>" size="22" /></td>
-                                        <td><input type="text" name="Units Left" value="<%= totalMinUnits %>" size="9" /></td>
-                                    </form>
-                                </tr>
+                                    <tr>
+                                        <td colspan="3">No concentrations have been completed for this student.</td>
+                                    </tr>
                     <%
-                                
+                                }
                             }
                         } catch (Exception e) {
                             errorMessage = e.getMessage();
