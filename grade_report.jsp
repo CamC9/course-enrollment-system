@@ -240,11 +240,14 @@
                                             ResultSet gradeConversionRs = gradeConversionStmt.executeQuery();
                                             gradeConversionRs.next();
                                             double gradeDouble = gradeConversionRs.getDouble("number_grade");
-                                            totalGradePoints += gradeDouble * units;
-                                            totalUnits += units;
-                                            if (gradeDouble > 0.0) {
-                                                currQuarterGradePoints += gradeDouble * units;
-                                                currQuarterUnits += units;
+                                            // Exclude classes with a Letter grade of 'IN' from the GPA calculation
+                                            if (!grade_val.equals("IN")) {
+                                                totalGradePoints += gradeDouble * units;
+                                                totalUnits += units;
+                                                if (gradeDouble > 0.0) {
+                                                    currQuarterGradePoints += gradeDouble * units;
+                                                    currQuarterUnits += units;
+                                                }
                                             }
                                 
                                             boolean isLastRow = rs.isLast();

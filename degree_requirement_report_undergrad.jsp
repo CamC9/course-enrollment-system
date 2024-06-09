@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Classes Taken By Student Report Form</title>
+    <title>Undergrad Student Remaining Units Report Form</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         function updateUndergradPID() {
@@ -179,7 +179,7 @@
                                             String action = request.getParameter("action");
                                             if (action != null && action.equals("show_undergrad_details")) {
                                                 conn2.setAutoCommit(false);
-                                                PreparedStatement pstmt = conn2.prepareStatement("SELECT degree_name FROM degree_requirements WHERE degree_name NOT LIKE 'MSC%' AND degree_name NOT LIKE 'PHD%' GROUP BY degree_name");
+                                                PreparedStatement pstmt = conn2.prepareStatement("SELECT degree_name FROM degree_requirements WHERE degree_name NOT LIKE 'MS%' AND degree_name NOT LIKE 'PHD%' GROUP BY degree_name");
                                                 rs2 = pstmt.executeQuery();
                                                 conn2.commit();
                                                 conn2.setAutoCommit(true);
@@ -274,7 +274,7 @@
                     %>
                                     <tr>
                                         <form action="degree_requirement_report_undergrad.jsp" method="get">
-                                            <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="15" /></td>
+                                            <td><input type="text" name="DegreeName" value="<%= rs3.getString("degree_name") %>" size="25" /></td>
                                             <td><input type="text" name="Category" value="<%= rs3.getString("category_name") %>" size="22" /></td>
                                             <td><input type="text" name="Units Left" value="<%= rs3.getInt("min_units") - categoryUnitsTaken %>" size="9" /></td>
                                         </form>
@@ -286,7 +286,7 @@
                     %>
                                 <tr>
                                     <form action="degree_requirement_report_undergrad.jsp" method="get">
-                                        <td><input type="text" name="DegreeName" value="<%= firstDegreeName %>" size="15" /></td>
+                                        <td><input type="text" name="DegreeName" value="<%= firstDegreeName %>" size="25" /></td>
                                         <td><input type="text" name="Category" value="<%= firstDepartmentName %>" size="22" /></td>
                                         <td><input type="text" name="Units Left" value="<%= totalMinUnits %>" size="9" /></td>
                                     </form>
