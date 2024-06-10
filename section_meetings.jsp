@@ -42,6 +42,7 @@
                             Connection conn = null;
                             Statement stmt = null;
                             ResultSet rs = null;
+                            String errorMessage = "";
                             try {
                                 Class.forName("org.postgresql.Driver");
                                 conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
@@ -117,6 +118,12 @@
                         <%
                                 }
                             } catch (Exception e) {
+                                errorMessage = e.getMessage();
+                                %>
+                                <tr>
+                                    <td colspan="6"><%= errorMessage %></td>
+                                </tr>
+                                <%
                                 e.printStackTrace();
                             } finally {
                                 try {
@@ -130,6 +137,12 @@
                                         conn.close();
                                     }
                                 } catch (Exception e) {
+                                    errorMessage = e.getMessage();
+                                    %>
+                                    <tr>
+                                        <td colspan="6"><%= errorMessage %></td>
+                                    </tr>
+                                    <%
                                     e.printStackTrace();
                                 }
                             }
