@@ -233,18 +233,22 @@
                                 // Get the degree requirements for the selected degree
                                 String degreeName = request.getParameter("DegreeName");
                                 // Get completed concentrations for the student
-                                String completedConcentrationsPt1SQL = "SELECT cc.concentration_name " +
-                                                "FROM concentration_consists_of cc " +
-                                                "JOIN classes cls ON cc.course_id = cls.course_id " +
-                                                "JOIN past_enrollment pe ON cls.class_id = pe.class_id " +
-                                                "WHERE pe.student_pid = ? AND cc.degree_name = ? AND pe.grade NOT LIKE 'IN%' " +
-                                                "GROUP BY cc.concentration_name " +
-                                                "HAVING SUM(pe.units) >= MIN(cc.min_units_concentration) ";
+                                String completedConcentrationsSQL = "SELECT cc.concentration_name " +
+                                    "FROM concentration_consists_of cc " +
+                                    "JOIN classes cls ON cc.course_id = cls.course_id " +
+                                    "JOIN past_enrollment pe ON cls.class_id = pe.class_id " +
+                                    "LEFT JOIN grade_conversion gc ON pe.grade = gc.letter_grade " +
+                                    "JOIN courses cr ON cls.course_id = cr.course_id " +
+                                    "WHERE pe.student_pid = ? AND cc.degree_name = ? AND pe.grade NOT LIKE 'IN%' " +
+                                    "GROUP BY cc.concentration_name " +
+                                    "HAVING SUM(pe.units) >= MIN(cc.min_units_concentration) " +
+                                    "AND (SUM(CASE WHEN cr.grading_type LIKE '%letter%' THEN gc.number_grade * pe.units ELSE 0 END) / " +
+                                    "SUM(CASE WHEN cr.grading_type LIKE '%letter%' THEN pe.units ELSE 0 END)) >= MIN(cc.min_gpa)";
                                 // Get rid of concentrations that don't have the minimum GPA
                                 // Ignore courses taken for grading_type = 'S/U' for GPA calculation, but include them in the units calculation
 
 
-                                pstmt3 = conn3.prepareStatement(completedConcentrationsPt1SQL);
+                                pstmt3 = conn3.prepareStatement(completedConcentrationsSQL);
                                 pstmt3.setString(1, gradPID);
                                 pstmt3.setString(2, degreeName);
                                 rs3 = pstmt3.executeQuery();
@@ -268,6 +272,7 @@
                                     </tr>
                     <%
                                 }
+                                // Display the 
                             }
                         } catch (Exception e) {
                             errorMessage = e.getMessage();
