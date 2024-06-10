@@ -253,7 +253,6 @@
                                 pstmt3.setString(2, degreeName);
                                 rs3 = pstmt3.executeQuery();
                                 conn3.commit();
-                                conn3.setAutoCommit(true);
                                 boolean hasResults = false;
                                 while (rs3.next()) {
                     %>
@@ -272,6 +271,49 @@
                                     </tr>
                     <%
                                 }
+
+                                // Step 3: List remaining courses from each concentration
+                                String allConcentrationsSQL = "SELECT DISTINCT concentration_name FROM concentration_consists_of WHERE degree_name = ?";
+                                pstmt3 = conn3.prepareStatement(allConcentrationsSQL);
+                                pstmt3.setString(1, degreeName);
+                                rs3 = pstmt3.executeQuery();
+                                
+                                %>
+                                <tr>
+                                    <td colspan="3">Remaining Courses:</td>
+                                </tr>
+                                <%
+                                while (rs3.next()) {
+                                    String concentrationName = rs3.getString("concentration_name");
+                                    
+                                    // Step 4: Find courses the student has not yet taken in this concentration
+                                    String remainingCoursesSQL = "SELECT cc.course_id, cls.class_title, MIN(cls.quarter || ' ' || cls.year) AS next_offering " +
+                                                                "FROM concentration_consists_of cc " +
+                                                                "LEFT JOIN past_enrollment pe ON cc.course_id = pe.class_id AND pe.student_pid = ? " +
+                                                                "JOIN classes cls ON cc.course_id = cls.course_id " +
+                                                                "WHERE cc.concentration_name = ? AND pe.student_pid IS NULL AND (cls.year > 2018 OR (cls.year = 2018 AND cls.quarter > 'SPRING')) " +
+                                                                "GROUP BY cc.course_id, cls.class_title";
+                                    PreparedStatement pstmtRemainingCourses = conn3.prepareStatement(remainingCoursesSQL);
+                                    pstmtRemainingCourses.setString(1, gradPID);
+                                    pstmtRemainingCourses.setString(2, concentrationName);
+                                    ResultSet rsRemainingCourses = pstmtRemainingCourses.executeQuery();
+                                    
+                                    out.println("<h3>Concentration: " + concentrationName + "</h3>");
+                                    out.println("<table border='1'>");
+                                    out.println("<tr><th>Course ID</th><th>Course Title</th><th>Next Offering</th></tr>");
+                                    while (rsRemainingCourses.next()) {
+                                        out.println("<tr>");
+                                        out.println("<td>" + rsRemainingCourses.getString("course_id") + "</td>");
+                                        out.println("<td>" + rsRemainingCourses.getString("class_title") + "</td>");
+                                        out.println("<td>" + rsRemainingCourses.getString("next_offering") + "</td>");
+                                        out.println("</tr>");
+                                    }
+                                    out.println("</table>");
+                                }
+
+                                conn3.commit();
+                                conn3.setAutoCommit(true);
+
                                 // Display the 
                             }
                         } catch (Exception e) {
