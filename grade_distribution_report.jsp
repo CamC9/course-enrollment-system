@@ -16,6 +16,10 @@
             var Quarter = document.getElementById('QuarterSelect').value;
             document.getElementById('selectedQuarter').value = Quarter;
         }
+        function updateYear() {
+            var Year = document.getElementById('Year').value;
+            document.getElementById('selectedYear').value = Year;
+        }
         window.onload = function() {
             updateCourseID();  // The initial PID is now set when the page loads
             updateFacultyName();
@@ -135,7 +139,7 @@
                                     <option value="Spring">Spring</option>
                                     <option value="Summer">Summer</option>
                                 </select>
-                                <input type="text" name="Year" id="Year" size="6" placeholder="Year" />
+                                <input type="text" name="Year" id="Year" size="6" placeholder="Year" onchange="updateYear()" />
                             </form>
                         </tr>
                         <tr>
@@ -166,13 +170,38 @@
                                     conn.setAutoCommit(false);
                                    
                                     // Retrieve all student attributes given the PID
-                                    PreparedStatement pstmt = conn.prepareStatement(
-                                        "SELECT course_id FROM courses WHERE course_id = ? "
-                                    );
-                                    
+                                    String xyzSql = "SELECT " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'A%' THEN 1 ELSE 0 END) AS count_A, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'B%' THEN 1 ELSE 0 END) AS count_B, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'C%' THEN 1 ELSE 0 END) AS count_C, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'D%' THEN 1 ELSE 0 END) AS count_D, " +
+                                                "SUM(CASE WHEN pe.grade NOT LIKE 'A%' AND pe.grade NOT LIKE 'B%' AND pe.grade NOT LIKE 'C%' AND pe.grade NOT LIKE 'D%' THEN 1 ELSE 0 END) AS count_other " +
+                                                "FROM past_enrollment pe " +
+                                                "JOIN class_sections cs ON pe.section_id = cs.section_id " +
+                                                "JOIN classes cls ON cs.class_id = cls.class_id " +
+                                                "JOIN courses c ON cls.course_id = c.course_id " +
+                                                "JOIN faculty f ON cs.instructor = f.name " +
+                                                "WHERE c.course_id = ? AND f.name = ? AND cls.quarter = ? AND cls.year = ? " +
+                                                "AND pe.grade != 'IN' ";
+
+                                    PreparedStatement pstmt = conn.prepareStatement(xyzSql);
                                     pstmt.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
-                                    rs = pstmt.executeQuery();
-                                    conn.commit();
+                                    pstmt.setString(2, request.getParameter("FacultyName"));
+                                    pstmt.setString(3, request.getParameter("Quarter"));
+                                    pstmt.setInt(4, Integer.parseInt(request.getParameter("Year"))); 
+                                    try {
+                                        rs = pstmt.executeQuery();
+                                        conn.commit();
+                                    } catch (Exception e) {
+                                        errorMessageMain = e.getMessage();
+                                        %>
+                                        <tr>
+                                            <td colspan="15"><%= errorMessageMain %></td>
+                                        </tr>
+                                        <%
+                                        e.printStackTrace();
+                                        conn.rollback();
+                                    }
 
                                     while (rs.next()) {
                         %>
@@ -188,7 +217,11 @@
                             </tr>
                             <tr>
                                 <form action="grade_distribution_report.jsp" method="get">
-                                    <td><input type="text" name="CourseID" value="<%= rs.getInt("course_id") %>" size="5" /></td>
+                                    <td><input type="text" name="count_A" value="<%= rs.getInt("count_A") %>" size="5" /></td>
+                                    <td><input type="text" name="count_B" value="<%= rs.getInt("count_B") %>" size="5" /></td>
+                                    <td><input type="text" name="count_C" value="<%= rs.getInt("count_C") %>" size="5" /></td>
+                                    <td><input type="text" name="count_D" value="<%= rs.getInt("count_D") %>" size="5" /></td>
+                                    <td><input type="text" name="count_other" value="<%= rs.getInt("count_other") %>" size="5" /></td>
                                 </form>
                             </tr>
                         <%
