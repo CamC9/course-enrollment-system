@@ -250,6 +250,29 @@
                             </tr>
                         <%
                                     }
+
+                                    PreparedStatement pstmtAvgGPA = conn.prepareStatement(
+                                        "SELECT AVG(gpa) FROM students WHERE course_id = ? AND name = ? AND quarter = ? AND year = ?"
+                                    );
+
+                                    pstmtAvgGPA.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
+                                    pstmtAvgGPA.setString(2, request.getParameter("FacultyName"));
+                                    pstmtAvgGPA.setString(3, request.getParameter("Quarter"));
+                                    pstmtAvgGPA.setInt(4, Integer.parseInt(request.getParameter("Year")));
+                                    rs = pstmtAvgGPA.executeQuery();
+                                    conn.commit();
+                                    conn.setAutoCommit(true);
+
+                                    while (rs.next()) {
+                        %>
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Average GPA</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="AvgGPA" value="<%= rs.getDouble("AVG(gpa)") %>" size="5" /></td>
+                            </tr>
+                        <%
+                                    }
                                 }
                             } catch (Exception e) {
                                 errorMessageMain = e.getMessage();
