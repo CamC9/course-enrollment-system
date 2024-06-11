@@ -310,15 +310,20 @@
                             </tr>
                         <%
                                     }
+                                    String xyGPA = "SELECT SUM(CASE WHEN c.grading_type LIKE '%letter%' THEN gc.number_grade * pe.units ELSE 0 END) / " +
+                                                "SUM(CASE WHEN c.grading_type LIKE '%letter%' THEN pe.units ELSE 0 END) as gpa " +
+                                                "FROM past_enrollment pe " +
+                                                "LEFT JOIN grade_conversion gc ON pe.grade = gc.letter_grade " +
+                                                "JOIN class_sections cs ON pe.section_id = cs.section_id " +
+                                                "JOIN classes cls ON cs.class_id = cls.class_id " +
+                                                "JOIN courses c ON cls.course_id = c.course_id " +
+                                                "JOIN faculty f ON cs.instructor = f.name " +
+                                                "WHERE c.course_id = ? AND f.name = ? " +
+                                                "AND pe.grade != 'IN' ";
 
-                                    PreparedStatement pstmtAvgGPA = conn.prepareStatement(
-                                        "SELECT AVG(gpa) FROM students WHERE course_id = ? AND name = ? AND quarter = ? AND year = ?"
-                                    );
-
+                                    PreparedStatement pstmtAvgGPA = conn.prepareStatement(xyGPA);
                                     pstmtAvgGPA.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
                                     pstmtAvgGPA.setString(2, request.getParameter("FacultyName"));
-                                    pstmtAvgGPA.setString(3, request.getParameter("Quarter"));
-                                    pstmtAvgGPA.setInt(4, Integer.parseInt(request.getParameter("Year")));
                                     rs = pstmtAvgGPA.executeQuery();
                                     conn.commit();
                                     conn.setAutoCommit(true);
@@ -329,7 +334,7 @@
                                 <td colspan="5" style="text-align: center;">Average GPA</td>
                             </tr>
                             <tr>
-                                <td><input type="text" name="AvgGPA" value="<%= rs.getDouble("AVG(gpa)") %>" size="5" /></td>
+                                <td><input type="text" name="AvgGPA" value="<%= rs.getDouble("gpa") %>" size="5" /></td>
                             </tr>
                         <%
                                     }
