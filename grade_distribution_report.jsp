@@ -4,17 +4,22 @@
     <title>Multi-dimensional Grade Distribution Report Form</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
-        function updateUndergradPID() {
-            var UndergradPID = document.getElementById('UndergradPIDSelect').value;
-            document.getElementById('selectedUndergradPID').value = UndergradPID;
+        function updateCourseID() {
+            var CourseID = document.getElementById('CourseIDSelect').value;
+            document.getElementById('selectedCourseID').value = CourseID;
         }
-        function updateDegreeName() {
-            var DegreeName = document.getElementById('DegreeNameSelect').value;
-            document.getElementById('selectedDegreeName').value = DegreeName;
+        function updateFacultyName() {
+            var FacultyName = document.getElementById('FacultyNameSelect').value;
+            document.getElementById('selectedFacultyName').value = FacultyName;
+        }
+        function updateQuarter() {
+            var Quarter = document.getElementById('QuarterSelect').value;
+            document.getElementById('selectedQuarter').value = Quarter;
         }
         window.onload = function() {
-            updateUndergradPID();  // The initial PID is now set when the page loads
-            updateDegreeName();
+            updateCourseID();  // The initial PID is now set when the page loads
+            updateFacultyName();
+            updateQuarter();
         }
     </script>
 </head>
@@ -28,28 +33,6 @@
             <td>
                 <table border="1">
                     <thead>
-                        <tr>
-                            <td colspan="5" style="text-align: center;">Course + Professor + Quarter</td>
-                            <td colspan="5" style="text-align: center;">Course + Professor</td>
-                            <td colspan="5" style="text-align: center;">Course</td>
-                        </tr>
-                        <tr>
-                            <th>A</th>
-                            <th>B</th>
-                            <th>C</th>
-                            <th>D</th>
-                            <th>Other</th>
-                            <th>A</th>
-                            <th>B</th>
-                            <th>C</th>
-                            <th>D</th>
-                            <th>Other</th>
-                            <th>A</th>
-                            <th>B</th>
-                            <th>C</th>
-                            <th>D</th>
-                            <th>Other</th>
-                        </tr>
                         <tr>
                             <form action="grade_distribution_report.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
@@ -82,12 +65,6 @@
                                                 <%
                                             }
                                         } catch (Exception e) {
-                                            errorMessage = e.getMessage();
-                                            %>
-                                            <tr>
-                                                <td colspan="15"><%= errorMessage %></td>
-                                            </tr>
-                                            <%
                                             e.printStackTrace();
                                         } finally {
                                             try {
@@ -101,18 +78,12 @@
                                                     conn1.close();
                                                 }
                                             } catch (Exception e) {
-                                                errorMessage = e.getMessage();
-                                                %>
-                                                <tr>
-                                                    <td colspan="15"><%= errorMessage %></td>
-                                                </tr>
-                                                <%
                                                 e.printStackTrace();
                                             }
                                         }
                                     %>
                                 </select>
-                                <select name="ProfessorName" id="ProfessorNameSelect" onchange="updateProfessorName()">
+                                <select name="ProfessorName" id="FacultyNameSelect" onchange="updateFacultyName()">
                                     <% 
                                         Connection conn2 = null;
                                         Statement stmt2 = null;
@@ -140,12 +111,6 @@
                                                 <%
                                             }
                                         } catch (Exception e) {
-                                            errorMessage = e.getMessage();
-                                            %>
-                                            <tr>
-                                                <td colspan="15"><%= errorMessageProf %></td>
-                                            </tr>
-                                            <%
                                             e.printStackTrace();
                                         } finally {
                                             try {
@@ -159,12 +124,6 @@
                                                     conn2.close();
                                                 }
                                             } catch (Exception e) {
-                                                errorMessage = e.getMessage();
-                                                %>
-                                                <tr>
-                                                    <td colspan="15"><%= errorMessageProf %></td>
-                                                </tr>
-                                                <%
                                                 e.printStackTrace();
                                             }
                                         }
@@ -181,9 +140,9 @@
                         </tr>
                         <tr>
                             <form action="grade_distribution_report.jsp" method="get">
-                                <input type="hidden" name="action" value="show_undergrad_details" />
+                                <input type="hidden" name="action" value="show_grade_distribution_details" />
                                 <input type="hidden" name="CourseID" id="selectedCourseID" />
-                                <input type="hidden" name="ProfessorName" id="selectedProfessorName" />
+                                <input type="hidden" name="FacultyName" id="selectedFacultyName" />
                                 <input type="hidden" name="Quarter" id="selectedQuarter" />
                                 <input type="hidden" name="Year" id="selectedYear" />
                                 <input type="submit" value="Show Grade Details" />
@@ -195,6 +154,7 @@
                             Connection conn = null;
                             Statement stmt = null;
                             ResultSet rs = null;
+                            String errorMessageMain = "";
                             try {
                                 Class.forName("org.postgresql.Driver");
                                 conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
@@ -202,33 +162,102 @@
                                 
                                 // Check if any form data was submitted
                                 String action = request.getParameter("action");
-                                if (action != null && action.equals("show_undergrad_details")) {
+                                if (action != null && action.equals("show_grade_distribution_details")) {
                                     conn.setAutoCommit(false);
                                    
                                     // Retrieve all student attributes given the PID
                                     PreparedStatement pstmt = conn.prepareStatement(
-                                        "SELECT * FROM students WHERE PID = ?");
+                                        "SELECT course_id FROM courses WHERE course_id = ? "
+                                    );
                                     
-                                    pstmt.setString(1, request.getParameter("UndergradPID"));
+                                    pstmt.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
                                     rs = pstmt.executeQuery();
+                                    conn.commit();
+
+                                    while (rs.next()) {
+                        %>
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Course + Professor + Quarter</td>
+                            </tr>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th>Other</th>
+                            </tr>
+                            <tr>
+                                <form action="grade_distribution_report.jsp" method="get">
+                                    <td><input type="text" name="CourseID" value="<%= rs.getInt("course_id") %>" size="5" /></td>
+                                </form>
+                            </tr>
+                        <%
+                                    }
+
+                                    PreparedStatement pstmtFaculty = conn.prepareStatement(
+                                        "SELECT name FROM faculty WHERE name = ? "
+                                    );
+                                    
+                                    pstmtFaculty.setString(1, request.getParameter("FacultyName"));
+                                    rs = pstmtFaculty.executeQuery();
+                                    conn.commit();
+
+                                    while (rs.next()) {
+                        %>
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Course + Professor</td>
+                            </tr>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th>Other</th>
+                            </tr>
+                            <tr>
+                                <form action="grade_distribution_report.jsp" method="get">
+                                    <td><input type="text" name="FacultyName" value="<%= rs.getString("name") %>" size="15" /></td>
+                                </form>
+                            </tr>
+                        <%
+                                    }
+                                    
+                                    PreparedStatement pstmtQuarter = conn.prepareStatement(
+                                        "SELECT quarter FROM classes WHERE quarter = ? GROUP BY quarter"
+                                    );
+                                    
+                                    pstmtQuarter.setString(1, request.getParameter("Quarter"));
+                                    rs = pstmtQuarter.executeQuery();
                                     conn.commit();
                                     conn.setAutoCommit(true);
 
                                     while (rs.next()) {
                         %>
                             <tr>
+                                <td colspan="5" style="text-align: center;">Course</td>
+                            </tr>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th>Other</th>
+                            </tr>
+                            <tr>
                                 <form action="grade_distribution_report.jsp" method="get">
-                                    <td><input type="text" name="PID" value="<%= rs.getString("PID") %>" size="10" /></td>
-                                    <td><input type="text" name="First" value="<%= rs.getString("first") %>" size="13" /></td>
-                                    <td><input type="text" name="Middle" value="<%= rs.getString("middle") %>" size="11" /></td>
-                                    <td><input type="text" name="Last" value="<%= rs.getString("last") %>" size="11" /></td>
+                                    <td><input type="text" name="Quarter" value="<%= rs.getString("quarter") %>" size="5" /></td>
                                 </form>
                             </tr>
                         <%
                                     }
-
                                 }
                             } catch (Exception e) {
+                                errorMessageMain = e.getMessage();
+                                %>
+                                <tr>
+                                    <td colspan="15"><%= errorMessageMain %></td>
+                                </tr>
+                                <%
                                 e.printStackTrace();
                             } finally {
                                 try {
@@ -242,6 +271,12 @@
                                         conn.close();
                                     }
                                 } catch (Exception e) {
+                                    errorMessageMain = e.getMessage();
+                                    %>
+                                    <tr>
+                                        <td colspan="15"><%= errorMessageMain %></td>
+                                    </tr>
+                                    <%
                                     e.printStackTrace();
                                 }
                             }
