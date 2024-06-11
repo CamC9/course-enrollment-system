@@ -226,12 +226,23 @@
                             </tr>
                         <%
                                     }
+                                    String xySql = "SELECT " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'A%' THEN 1 ELSE 0 END) AS count_A, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'B%' THEN 1 ELSE 0 END) AS count_B, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'C%' THEN 1 ELSE 0 END) AS count_C, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'D%' THEN 1 ELSE 0 END) AS count_D, " +
+                                                "SUM(CASE WHEN pe.grade NOT LIKE 'A%' AND pe.grade NOT LIKE 'B%' AND pe.grade NOT LIKE 'C%' AND pe.grade NOT LIKE 'D%' THEN 1 ELSE 0 END) AS count_other " +
+                                                "FROM past_enrollment pe " +
+                                                "JOIN class_sections cs ON pe.section_id = cs.section_id " +
+                                                "JOIN classes cls ON cs.class_id = cls.class_id " +
+                                                "JOIN courses c ON cls.course_id = c.course_id " +
+                                                "JOIN faculty f ON cs.instructor = f.name " +
+                                                "WHERE c.course_id = ? AND f.name = ? " +
+                                                "AND pe.grade != 'IN' ";
 
-                                    PreparedStatement pstmtFaculty = conn.prepareStatement(
-                                        "SELECT name FROM faculty WHERE name = ? "
-                                    );
-                                    
-                                    pstmtFaculty.setString(1, request.getParameter("FacultyName"));
+                                    PreparedStatement pstmtFaculty = conn.prepareStatement(xySql);
+                                    pstmtFaculty.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
+                                    pstmtFaculty.setString(2, request.getParameter("FacultyName"));
                                     rs = pstmtFaculty.executeQuery();
                                     conn.commit();
 
@@ -249,20 +260,32 @@
                             </tr>
                             <tr>
                                 <form action="grade_distribution_report.jsp" method="get">
-                                    <td><input type="text" name="FacultyName" value="<%= rs.getString("name") %>" size="15" /></td>
+                                    <td><input type="text" name="count_A" value="<%= rs.getInt("count_A") %>" size="5" /></td>
+                                    <td><input type="text" name="count_B" value="<%= rs.getInt("count_B") %>" size="5" /></td>
+                                    <td><input type="text" name="count_C" value="<%= rs.getInt("count_C") %>" size="5" /></td>
+                                    <td><input type="text" name="count_D" value="<%= rs.getInt("count_D") %>" size="5" /></td>
+                                    <td><input type="text" name="count_other" value="<%= rs.getInt("count_other") %>" size="5" /></td>
                                 </form>
                             </tr>
                         <%
                                     }
+                                    String xSql = "SELECT " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'A%' THEN 1 ELSE 0 END) AS count_A, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'B%' THEN 1 ELSE 0 END) AS count_B, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'C%' THEN 1 ELSE 0 END) AS count_C, " +
+                                                "SUM(CASE WHEN pe.grade LIKE 'D%' THEN 1 ELSE 0 END) AS count_D, " +
+                                                "SUM(CASE WHEN pe.grade NOT LIKE 'A%' AND pe.grade NOT LIKE 'B%' AND pe.grade NOT LIKE 'C%' AND pe.grade NOT LIKE 'D%' THEN 1 ELSE 0 END) AS count_other " +
+                                                "FROM past_enrollment pe " +
+                                                "JOIN class_sections cs ON pe.section_id = cs.section_id " +
+                                                "JOIN classes cls ON cs.class_id = cls.class_id " +
+                                                "JOIN courses c ON cls.course_id = c.course_id " +
+                                                "WHERE c.course_id = ? " +
+                                                "AND pe.grade != 'IN' ";
                                     
-                                    PreparedStatement pstmtQuarter = conn.prepareStatement(
-                                        "SELECT quarter FROM classes WHERE quarter = ? GROUP BY quarter"
-                                    );
-                                    
-                                    pstmtQuarter.setString(1, request.getParameter("Quarter"));
+                                    PreparedStatement pstmtQuarter = conn.prepareStatement(xSql);
+                                    pstmtQuarter.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
                                     rs = pstmtQuarter.executeQuery();
                                     conn.commit();
-                                    conn.setAutoCommit(true);
 
                                     while (rs.next()) {
                         %>
@@ -278,7 +301,11 @@
                             </tr>
                             <tr>
                                 <form action="grade_distribution_report.jsp" method="get">
-                                    <td><input type="text" name="Quarter" value="<%= rs.getString("quarter") %>" size="5" /></td>
+                                    <td><input type="text" name="count_A" value="<%= rs.getInt("count_A") %>" size="5" /></td>
+                                    <td><input type="text" name="count_B" value="<%= rs.getInt("count_B") %>" size="5" /></td>
+                                    <td><input type="text" name="count_C" value="<%= rs.getInt("count_C") %>" size="5" /></td>
+                                    <td><input type="text" name="count_D" value="<%= rs.getInt("count_D") %>" size="5" /></td>
+                                    <td><input type="text" name="count_other" value="<%= rs.getInt("count_other") %>" size="5" /></td>
                                 </form>
                             </tr>
                         <%
