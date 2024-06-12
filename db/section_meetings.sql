@@ -15,6 +15,7 @@ RETURNS TRIGGER AS $$
 DECLARE
     overlap BOOLEAN;
 BEGIN
+    -- Check for overlapping meetings from the same section
     overlap := EXISTS (
         SELECT 1 
         FROM section_meetings 
@@ -38,6 +39,32 @@ BEGIN
         RAISE EXCEPTION 'Meeting time overlaps with an existing meeting for the same SectionID on at least one day';
     END IF;
 
+    -- Check for overlapping meetings taught by the same professor in other sections
+    overlap := EXISTS (
+        SELECT 1 
+        FROM section_meetings sm
+        JOIN class_sections cs ON sm.section_id = cs.section_id
+        WHERE cs.instructor = (SELECT instructor FROM class_sections WHERE section_id = NEW.section_id)
+        AND sm.section_id != NEW.section_id
+        AND (
+            (NEW.start_time < sm.end_time AND NEW.end_time > sm.start_time)
+        )
+        AND (
+            (
+                position('M' in NEW.days_of_week) > 0 AND position('M' in sm.days_of_week) > 0 OR
+                position('Tu' in NEW.days_of_week) > 0 AND position('Tu' in sm.days_of_week) > 0 OR
+                position('W' in NEW.days_of_week) > 0 AND position('W' in sm.days_of_week) > 0 OR
+                position('Th' in NEW.days_of_week) > 0 AND position('Th' in sm.days_of_week) > 0 OR
+                position('F' in NEW.days_of_week) > 0 AND position('F' in sm.days_of_week) > 0 OR
+                position('S' in NEW.days_of_week) > 0 AND position('S' in sm.days_of_week) > 0
+            )
+        )
+    );
+
+    IF overlap THEN
+        RAISE EXCEPTION 'Professor holds another meeting in another section at the same time on the same day';
+    END IF;
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -49,28 +76,28 @@ EXECUTE FUNCTION check_meeting_overlap();
 
 
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S1', 'Lecture', '10:00', '11:00', 'MWF', 'CSB 130');
+    VALUES ('S1', 'Lecture', '10:00', '10:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S2', 'Lecture', '11:00', '12:00', 'MWF', 'CSB 130');
+    VALUES ('S2', 'Lecture', '11:00', '11:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S3', 'Lecture', '13:00', '14:00', 'MWF', 'CSB 130');
+    VALUES ('S3', 'Lecture', '13:00', '13:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S4', 'Lecture', '14:00', '15:00', 'MWF', 'CSB 130');
+    VALUES ('S4', 'Lecture', '14:00', '14:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S5', 'Lecture', '11:00', '12:00', 'MWF', 'CSB 130');
+    VALUES ('S5', 'Lecture', '11:00', '11:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S6', 'Lecture', '09:00', '10:00', 'MWF', 'CSB 130');
+    VALUES ('S6', 'Lecture', '09:00', '9:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S7', 'Lecture', '08:00', '09:00', 'MWF', 'CSB 130');
+    VALUES ('S7', 'Lecture', '08:00', '08:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S8', 'Lecture', '10:00', '11:00', 'MWF', 'CSB 130');
+    VALUES ('S8', 'Lecture', '10:00', '10:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S9', 'Lecture', '11:00', '12:00', 'MWF', 'CSB 130');
+    VALUES ('S9', 'Lecture', '11:00', '11:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S10', 'Lecture', '12:00', '13:00', 'MWF', 'CSB 130');
+    VALUES ('S10', 'Lecture', '12:00', '12:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S11', 'Lecture', '10:00', '11:00', 'MWF', 'CSB 130');
+    VALUES ('S11', 'Lecture', '10:00', '10:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S12', 'Lecture', '13:00', '14:00', 'MWF', 'CSB 130');
+    VALUES ('S12', 'Lecture', '13:00', '13:59', 'MWF', 'CSB 130');
 INSERT INTO section_meetings (section_id, meeting_type, start_time, end_time, days_of_week, building_and_room)
-    VALUES ('S13', 'Lecture', '11:00', '12:00', 'MWF', 'CSB 130');
+    VALUES ('S13', 'Lecture', '11:00', '11:59', 'MWF', 'CSB 130');
