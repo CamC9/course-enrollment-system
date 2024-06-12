@@ -15,7 +15,7 @@ RETURNS TRIGGER AS $$
 DECLARE
     overlap BOOLEAN;
 BEGIN
-    -- Check for overlapping meetings from the same section
+    -- Check for overlapping meetings from same section
     overlap := EXISTS (
         SELECT 1 
         FROM section_meetings 
@@ -39,7 +39,7 @@ BEGIN
         RAISE EXCEPTION 'Meeting time overlaps with an existing meeting for the same SectionID on at least one day';
     END IF;
 
-    -- Check for overlapping meetings taught by the same professor in other sections
+    -- Check for overlapping meetings taught by the same professor in different sections
     overlap := EXISTS (
         SELECT 1 
         FROM section_meetings sm

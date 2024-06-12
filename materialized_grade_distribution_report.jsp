@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Multi-dimensional Grade Distribution Report Form</title>
+    <title>Materialized Multi-dimensional Grade Distribution Report Form</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script>
         function updateCourseID() {
@@ -38,7 +38,7 @@
                 <table border="1">
                     <thead>
                         <tr>
-                            <form action="grade_distribution_report.jsp" method="get">
+                            <form action="materialized_grade_distribution_report.jsp" method="get">
                                 <input type="hidden" name="action" value="select" />
                                 <input type="submit" value="Select Options" />
                                 <select name="CourseID" id="CourseIDSelect" onchange="updateCourseID()">
@@ -143,7 +143,7 @@
                             </form>
                         </tr>
                         <tr>
-                            <form action="grade_distribution_report.jsp" method="get">
+                            <form action="materialized_grade_distribution_report.jsp" method="get">
                                 <input type="hidden" name="action" value="show_grade_distribution_details" />
                                 <input type="hidden" name="CourseID" id="selectedCourseID" />
                                 <input type="hidden" name="FacultyName" id="selectedFacultyName" />
@@ -170,21 +170,21 @@
                                     conn.setAutoCommit(false);
                                    
                                     // Retrieve all student attributes given the PID
-                                    String xyzSql = "SELECT " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'A%' THEN 1 ELSE 0 END) AS count_A, " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'B%' THEN 1 ELSE 0 END) AS count_B, " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'C%' THEN 1 ELSE 0 END) AS count_C, " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'D%' THEN 1 ELSE 0 END) AS count_D, " +
-                                                "SUM(CASE WHEN pe.grade NOT LIKE 'A%' AND pe.grade NOT LIKE 'B%' AND pe.grade NOT LIKE 'C%' AND pe.grade NOT LIKE 'D%' THEN 1 ELSE 0 END) AS count_other " +
-                                                "FROM past_enrollment pe " +
-                                                "JOIN class_sections cs ON pe.section_id = cs.section_id " +
-                                                "JOIN classes cls ON cs.class_id = cls.class_id " +
-                                                "JOIN courses c ON cls.course_id = c.course_id " +
-                                                "JOIN faculty f ON cs.instructor = f.name " +
-                                                "WHERE c.course_id = ? AND f.name = ? AND cls.quarter = ? AND cls.year = ? " +
-                                                "AND pe.grade != 'IN' ";
+                                    String queryCPQG = "SELECT " +
+                                                    "course_id, " +
+                                                    "instructor, " +
+                                                    "quarter, " +
+                                                    "year, " +
+                                                    "SUM(CASE WHEN grade LIKE 'A%' THEN grade_count ELSE 0 END) AS count_A, " +
+                                                    "SUM(CASE WHEN grade LIKE 'B%' THEN grade_count ELSE 0 END) AS count_B, " +
+                                                    "SUM(CASE WHEN grade LIKE 'C%' THEN grade_count ELSE 0 END) AS count_C, " +
+                                                    "SUM(CASE WHEN grade LIKE 'D%' THEN grade_count ELSE 0 END) AS count_D, " +
+                                                    "SUM(CASE WHEN grade NOT LIKE 'A%' AND grade NOT LIKE 'B%' AND grade NOT LIKE 'C%' AND grade NOT LIKE 'D%' THEN grade_count ELSE 0 END) AS count_other " +
+                                                    "FROM CPQG " +
+                                                    "WHERE course_id = ? AND instructor = ? AND quarter = ? AND year = ? " +
+                                                    "GROUP BY course_id, instructor, quarter, year ";
 
-                                    PreparedStatement pstmt = conn.prepareStatement(xyzSql);
+                                    PreparedStatement pstmt = conn.prepareStatement(queryCPQG);
                                     pstmt.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
                                     pstmt.setString(2, request.getParameter("FacultyName"));
                                     pstmt.setString(3, request.getParameter("Quarter"));
@@ -216,7 +216,7 @@
                                 <th>Other</th>
                             </tr>
                             <tr>
-                                <form action="grade_distribution_report.jsp" method="get">
+                                <form action="materialized_grade_distribution_report.jsp" method="get">
                                     <td><input type="text" name="count_A" value="<%= rs.getInt("count_A") %>" size="5" /></td>
                                     <td><input type="text" name="count_B" value="<%= rs.getInt("count_B") %>" size="5" /></td>
                                     <td><input type="text" name="count_C" value="<%= rs.getInt("count_C") %>" size="5" /></td>
@@ -226,21 +226,19 @@
                             </tr>
                         <%
                                     }
-                                    String xySql = "SELECT " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'A%' THEN 1 ELSE 0 END) AS count_A, " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'B%' THEN 1 ELSE 0 END) AS count_B, " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'C%' THEN 1 ELSE 0 END) AS count_C, " +
-                                                "SUM(CASE WHEN pe.grade LIKE 'D%' THEN 1 ELSE 0 END) AS count_D, " +
-                                                "SUM(CASE WHEN pe.grade NOT LIKE 'A%' AND pe.grade NOT LIKE 'B%' AND pe.grade NOT LIKE 'C%' AND pe.grade NOT LIKE 'D%' THEN 1 ELSE 0 END) AS count_other " +
-                                                "FROM past_enrollment pe " +
-                                                "JOIN class_sections cs ON pe.section_id = cs.section_id " +
-                                                "JOIN classes cls ON cs.class_id = cls.class_id " +
-                                                "JOIN courses c ON cls.course_id = c.course_id " +
-                                                "JOIN faculty f ON cs.instructor = f.name " +
-                                                "WHERE c.course_id = ? AND f.name = ? " +
-                                                "AND pe.grade != 'IN' ";
 
-                                    PreparedStatement pstmtFaculty = conn.prepareStatement(xySql);
+                                    String queryCPG = "SELECT " +
+                                                    "course_id, " +
+                                                    "instructor, " +
+                                                    "SUM(CASE WHEN grade LIKE 'A%' THEN grade_count ELSE 0 END) AS count_A, " +
+                                                    "SUM(CASE WHEN grade LIKE 'B%' THEN grade_count ELSE 0 END) AS count_B, " +
+                                                    "SUM(CASE WHEN grade LIKE 'C%' THEN grade_count ELSE 0 END) AS count_C, " +
+                                                    "SUM(CASE WHEN grade LIKE 'D%' THEN grade_count ELSE 0 END) AS count_D, " +
+                                                    "SUM(CASE WHEN grade NOT LIKE 'A%' AND grade NOT LIKE 'B%' AND grade NOT LIKE 'C%' AND grade NOT LIKE 'D%' THEN grade_count ELSE 0 END) AS count_other " +
+                                                    "FROM CPG " +
+                                                    "WHERE course_id = ? AND instructor = ? " +
+                                                    "GROUP BY course_id, instructor ";
+                                    PreparedStatement pstmtFaculty = conn.prepareStatement(queryCPG);
                                     pstmtFaculty.setInt(1, Integer.parseInt(request.getParameter("CourseID")));
                                     pstmtFaculty.setString(2, request.getParameter("FacultyName"));
                                     rs = pstmtFaculty.executeQuery();
@@ -259,7 +257,7 @@
                                 <th>Other</th>
                             </tr>
                             <tr>
-                                <form action="grade_distribution_report.jsp" method="get">
+                                <form action="materialized_grade_distribution_report.jsp" method="get">
                                     <td><input type="text" name="count_A" value="<%= rs.getInt("count_A") %>" size="5" /></td>
                                     <td><input type="text" name="count_B" value="<%= rs.getInt("count_B") %>" size="5" /></td>
                                     <td><input type="text" name="count_C" value="<%= rs.getInt("count_C") %>" size="5" /></td>
@@ -300,7 +298,7 @@
                                 <th>Other</th>
                             </tr>
                             <tr>
-                                <form action="grade_distribution_report.jsp" method="get">
+                                <form action="materialized_grade_distribution_report.jsp" method="get">
                                     <td><input type="text" name="count_A" value="<%= rs.getInt("count_A") %>" size="5" /></td>
                                     <td><input type="text" name="count_B" value="<%= rs.getInt("count_B") %>" size="5" /></td>
                                     <td><input type="text" name="count_C" value="<%= rs.getInt("count_C") %>" size="5" /></td>
@@ -375,4 +373,4 @@
         </tr>
     </table>
 </body>
-</html>
+</html>ateriazlied M
