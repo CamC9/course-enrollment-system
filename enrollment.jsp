@@ -105,6 +105,7 @@
                             Connection conn = null;
                             Statement stmt = null;
                             ResultSet rs = null;
+                            String errorMessage = null;
                             try {
                                 Class.forName("org.postgresql.Driver");
                                 conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/cse132b", "cameroncuellar","tasker");
@@ -155,7 +156,6 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
-                                    response.sendRedirect("enrollment.jsp");
                                 }
 
                                 if (action != null && action.equals("update")) {
@@ -170,7 +170,6 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
-                                    response.sendRedirect("enrollment.jsp");
                                 }
 
                                 if (action != null && action.equals("delete")) {
@@ -180,7 +179,6 @@
                                     pstmt.executeUpdate();
                                     conn.commit();
                                     conn.setAutoCommit(true);
-                                    response.sendRedirect("enrollment.jsp");
                                 }
 
                                 rs = stmt.executeQuery("SELECT * FROM enrollment");
@@ -208,6 +206,17 @@
                         <%
                                 }
                             } catch (Exception e) {
+                                errorMessage = e.getMessage();
+                                %>
+                                <tr>
+                                    <td colspan="8"><%= errorMessage %></td>
+                                </tr>
+                                <script>
+                                    setTimeout(function() {
+                                        window.location.href = 'enrollment.jsp';
+                                    }, 5000);
+                                </script>
+                                <%    
                                 e.printStackTrace();
                             } finally {
                                 try {
@@ -221,6 +230,17 @@
                                         conn.close();
                                     }
                                 } catch (Exception e) {
+                                    errorMessage = e.getMessage();
+                                    %>
+                                    <tr>
+                                        <td colspan="8"><%= errorMessage %></td>
+                                    </tr>
+                                    <script>
+                                        setTimeout(function() {
+                                            window.location.href = 'enrollment.jsp';
+                                        }, 5000);
+                                    </script>
+                                    <%
                                     e.printStackTrace();
                                 }
                             }

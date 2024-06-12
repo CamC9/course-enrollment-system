@@ -10,7 +10,36 @@ CREATE TABLE enrollment (
     FOREIGN KEY (class_id) REFERENCES classes(class_id)
 );
 
--- Valid entries, make sure section id 1 exists
+CREATE OR REPLACE FUNCTION check_enrollment_cap() 
+RETURNS TRIGGER AS $$
+DECLARE
+    current_enrollment INT;
+    cap INT;
+BEGIN
+    -- Obtain current number of enrollments for section
+    SELECT COUNT(*) INTO current_enrollment
+    FROM enrollment
+    WHERE section_id = NEW.section_id;
+
+    -- Obtain enrollment cap for section
+    SELECT cs.enrollment_cap INTO cap 
+    FROM class_sections cs
+    WHERE cs.section_id = NEW.section_id;
+
+    -- Check if new enrollment would exceed cap
+    IF current_enrollment >= cap THEN
+        RAISE EXCEPTION 'Enrollment cap exceeded for section %', NEW.section_id;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_check_enrollment_cap
+BEFORE INSERT OR UPDATE ON enrollment
+FOR EACH ROW
+EXECUTE FUNCTION check_enrollment_cap();
+
 INSERT INTO enrollment (student_pid, class_id, section_id, units) 
     VALUES ('1', 1, 'S1', 4);
 INSERT INTO enrollment (student_pid, class_id, section_id, units) 

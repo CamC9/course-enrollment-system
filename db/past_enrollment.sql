@@ -10,7 +10,6 @@ CREATE TABLE past_enrollment (
     FOREIGN KEY (section_id) REFERENCES class_sections(section_id)
 );
 
--- Valid entries, make sure section id 1 exists
 INSERT INTO past_enrollment (student_pid, class_id, section_id, units, grade) 
     VALUES ('1', 2, 'S2', 4, 'A');
 INSERT INTO past_enrollment (student_pid, class_id, section_id, units, grade) 
