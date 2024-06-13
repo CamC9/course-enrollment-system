@@ -31,6 +31,7 @@ BEGIN
     FROM classes cls
     JOIN class_sections cs ON cls.class_id = cs.class_id
     WHERE cls.class_id = NEW.class_id;
+    AND NEW.grade != 'IN';
 
     IF EXISTS (
         SELECT 1 
