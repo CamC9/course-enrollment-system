@@ -37,27 +37,27 @@ BEGIN
     FROM classes cls
     JOIN class_sections cs ON cls.class_id = cs.class_id
     WHERE cls.class_id = NEW.class_id;
-    AND NEW.grade != 'IN';
-
-    IF EXISTS (
-        SELECT 1 
-        FROM cpqg_table 
-        WHERE course_id = retrieved_course_id 
-        AND instructor = retrieved_instructor 
-        AND quarter = retrieved_quarter
-        AND year = retrieved_year 
-        AND grade = NEW.grade
-    ) THEN
-        UPDATE cpqg_table
-        SET grade_count = grade_count + 1
-        WHERE course_id = retrieved_course_id 
-        AND instructor = retrieved_instructor 
-        AND quarter = retrieved_quarter 
-        AND year = retrieved_year 
-        AND grade = NEW.grade;
-    ELSE
-        INSERT INTO cpqg_table (course_id, instructor, quarter, year, grade, grade_count)
-        VALUES (retrieved_course_id, retrieved_instructor, retrieved_quarter, retrieved_year, NEW.grade, 1);
+    IF NEW.grade != 'IN' THEN
+        IF EXISTS (
+            SELECT 1 
+            FROM cpqg_table 
+            WHERE course_id = retrieved_course_id 
+            AND instructor = retrieved_instructor 
+            AND quarter = retrieved_quarter
+            AND year = retrieved_year 
+            AND grade = NEW.grade
+        ) THEN
+            UPDATE cpqg_table
+            SET grade_count = grade_count + 1
+            WHERE course_id = retrieved_course_id 
+            AND instructor = retrieved_instructor 
+            AND quarter = retrieved_quarter 
+            AND year = retrieved_year 
+            AND grade = NEW.grade;
+        ELSE
+            INSERT INTO cpqg_table (course_id, instructor, quarter, year, grade, grade_count)
+            VALUES (retrieved_course_id, retrieved_instructor, retrieved_quarter, retrieved_year, NEW.grade, 1);
+        END IF;
     END IF;
     RETURN NEW;
 END;
@@ -82,31 +82,32 @@ BEGIN
     FROM classes cls
     JOIN class_sections cs ON cls.class_id = cs.class_id
     WHERE cls.class_id = OLD.class_id;
-
-    IF EXISTS (
-        SELECT 1 
-        FROM cpqg_table 
-        WHERE course_id = retrieved_course_id 
-        AND instructor = retrieved_instructor 
-        AND quarter = retrieved_quarter
-        AND year = retrieved_year 
-        AND grade = OLD.grade
-        AND grade_count > 1
-    ) THEN
-        UPDATE cpqg_table
-        SET grade_count = grade_count - 1
-        WHERE course_id = retrieved_course_id 
-        AND instructor = retrieved_instructor 
-        AND quarter = retrieved_quarter 
-        AND year = retrieved_year 
-        AND grade = OLD.grade;
-    ELSE
-        DELETE FROM cpqg_table
-        WHERE course_id = retrieved_course_id 
-        AND instructor = retrieved_instructor 
-        AND quarter = retrieved_quarter 
-        AND year = retrieved_year 
-        AND grade = OLD.grade;
+    IF OLD.grade != 'IN' THEN
+        IF EXISTS (
+            SELECT 1 
+            FROM cpqg_table 
+            WHERE course_id = retrieved_course_id 
+            AND instructor = retrieved_instructor 
+            AND quarter = retrieved_quarter
+            AND year = retrieved_year 
+            AND grade = OLD.grade
+            AND grade_count > 1
+        ) THEN
+            UPDATE cpqg_table
+            SET grade_count = grade_count - 1
+            WHERE course_id = retrieved_course_id 
+            AND instructor = retrieved_instructor 
+            AND quarter = retrieved_quarter 
+            AND year = retrieved_year 
+            AND grade = OLD.grade;
+        ELSE
+            DELETE FROM cpqg_table
+            WHERE course_id = retrieved_course_id 
+            AND instructor = retrieved_instructor 
+            AND quarter = retrieved_quarter 
+            AND year = retrieved_year 
+            AND grade = OLD.grade;
+        END IF;
     END IF;
     RETURN OLD;
 END;
