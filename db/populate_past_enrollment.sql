@@ -24,3 +24,9 @@ INSERT INTO past_enrollment (student_pid, class_id, section_id, units, grade)
     VALUES ('7', 3, 'S3', 4, 'A');
 INSERT INTO past_enrollment (student_pid, class_id, section_id, units, grade) 
     VALUES ('6', 3, 'S3', 4, 'A');
+INSERT INTO past_enrollment (student_pid, class_id, section_id, units, grade) 
+    VALUES ('5', 4, 'S4', 4, 'B-');
+INSERT INTO past_enrollment (student_pid, class_id, section_id, units, grade) 
+    VALUES ('6', 4, 'S4', 4, 'B-');
+INSERT INTO past_enrollment (student_pid, class_id, section_id, units, grade) 
+    VALUES ('7', 4, 'S4', 4, 'IN');
