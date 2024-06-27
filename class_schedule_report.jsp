@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Classes Taken By Student Report Form</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/static/styles.css"> 
     <script>
         function updateUndergradPID() {
             var UndergradPID = document.getElementById('UndergradPIDSelect').value;
@@ -23,7 +23,7 @@
         <tr>
             <td>
                 <%@ page import="java.sql.*" %>
-                <jsp:include page="menu.html" />
+                <%@ include file="menu.html" %>
             </td>
             <td>
                 <table border="1">

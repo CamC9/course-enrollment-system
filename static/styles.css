@@ -1,0 +1,12 @@
+.input-field {
+    width: 10px; 
+}
+
+table, th, td, thead {
+    /* Make all table elements have a border thickness of 5px */
+    border: 10px solid red;
+}
+
+table {
+    border-collapse: collapse; /* Ensures that the borders don't have double lines */
+}

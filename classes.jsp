@@ -2,14 +2,14 @@
 <html>
 <head>
     <title>Class Information</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/static/styles.css"> 
 </head>
 <body>
     <table>
         <tr>
             <td>
                 <%@ page import="java.sql.*" %>
-                <jsp:include page="menu.html" />
+                <%@ include file="menu.html" %>
             </td>
             <td>
                 <table border="1">
